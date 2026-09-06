@@ -1,0 +1,167 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+// ==========================================
+// ENUMS
+// ==========================================
+
+enum Topic {
+  GEMARA
+  HALACHA
+  TANACH
+  MACHSHAVA
+  MUSSAR
+  CHASSIDUT
+  MISHNAH
+  PARSHA
+  MIDRASH
+  OTHER
+}
+
+enum LearningStyle {
+  IYUN
+  BEKIYUT
+  DISCUSSION
+  SHIUR_REVIEW
+  TEXT_FOCUSED
+  FLEXIBLE
+}
+
+enum LearningLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  ANY
+}
+
+enum LearningModality {
+  IN_PERSON
+  ONLINE
+  EITHER
+}
+
+enum Language {
+  ENGLISH
+  HEBREW
+  EITHER
+}
+
+enum RequestStatus {
+  OPEN
+  MATCHED
+  CLOSED
+  EXPIRED
+}
+
+enum Location {
+  JERUSALEM
+  TEL_AVIV
+  RAMAT_BEIT_SHEMESH
+  TEANECK
+  NEW_YORK
+  LONDON
+  OTHER
+}
+
+enum TimeSlot {
+  MORNING
+  AFTERNOON
+  NIGHT
+  FLEXIBLE
+}
+
+enum Timezone {
+  ISRAEL
+  EST
+  PST
+  GMT
+}
+
+// ==========================================
+// MODELS
+// ==========================================
+
+model User {
+  id              String       @id @default(uuid())
+  name            String
+  email           String       @unique
+  password        String   
+  whatsappNumber  String?
+  location        Location
+  timezone        Timezone
+  isSubscribed    Boolean      @default(true)
+  
+  // Relations
+  preferredTopics UserTopic[]
+  subscribedLocations UserLocation[]
+  requests        Request[]
+  matches         Match[]
+}
+
+model UserTopic {
+  id       String @id @default(uuid())
+  topic    Topic
+  
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Ensures a user can't subscribe to the same topic twice
+  @@unique([userId, topic])
+}
+
+model UserLocation {
+  id       String @id @default(uuid())
+  userId   String
+  location String // e.g., "TEANECK", "JERUSALEM", "LAKEWOOD"
+  
+  user     User   @relation(fields: [userId], references: [id])
+}
+
+model Request {
+  id           String           @id @default(uuid())
+  
+  // 1. Learning specifications
+  topic        Topic
+  seferOrTopic String?          // e.g., "Orot HaTeshuva", "Bava Kama"
+  style        LearningStyle
+  level        LearningLevel
+  modality     LearningModality @default(EITHER)
+  language     Language         @default(EITHER)
+  
+  // 2. Logistics
+  description  String
+  location     Location?        // Nullable because it might be ONLINE
+  timeSlot     TimeSlot
+  timezone     Timezone
+  status       RequestStatus    @default(OPEN)
+  
+  // 3. Lifecycle Timestamps
+  createdAt    DateTime         @default(now())
+  expiresAt    DateTime?
+  
+  // 4. Relations
+  requesterId  String
+  requester    User             @relation(fields: [requesterId], references: [id], onDelete: Cascade)
+  
+  match        Match?
+}
+
+model Match {
+  id            String   @id @default(uuid())
+  
+  // The request that was fulfilled
+  requestId     String   @unique
+  request       Request  @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  
+  // The user who accepted the request
+  matchedUserId String
+  matchedUser   User     @relation(fields: [matchedUserId], references: [id], onDelete: Cascade)
+  
+  createdAt     DateTime @default(now())
+}
+
