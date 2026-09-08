@@ -6,15 +6,17 @@ import { RequestsModule } from './requests/requests.module';
 import { MatchesModule } from './matches/matches.module'; 
 import { NotificationsModule } from './notifications/notifications.module';
 import { AuthModule } from './auth/auth.module';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
   imports: [
     EventEmitterModule.forRoot(), // <-- 2. Added this! (Initializes the event system)
-    PrismaModule, 
-    UsersModule, 
-    RequestsModule, 
-    MatchesModule, 
-    NotificationsModule, AuthModule
+    PrismaModule,
+    UsersModule,
+    RequestsModule,
+    MatchesModule,
+    NotificationsModule, AuthModule,
+    StatsModule
   ],
   controllers: [],
   providers: [],

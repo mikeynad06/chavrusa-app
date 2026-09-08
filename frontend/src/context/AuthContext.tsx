@@ -1,8 +1,10 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
+import { decodeJwtUserId } from '../lib/jwt';
 
 interface AuthContextValue {
   token: string | null;
   isAuthenticated: boolean;
+  userId: string | null;
   login: (token: string) => void;
   logout: () => void;
 }
@@ -22,8 +24,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(null);
   };
 
+  const userId = useMemo(() => (token ? decodeJwtUserId(token) : null), [token]);
+
   return (
-    <AuthContext.Provider value={{ token, isAuthenticated: !!token, login, logout }}>
+    <AuthContext.Provider value={{ token, isAuthenticated: !!token, userId, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
