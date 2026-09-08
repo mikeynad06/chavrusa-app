@@ -1,4 +1,4 @@
-import { IsString, IsEmail, IsOptional, IsEnum, IsBoolean } from 'class-validator';
+import { IsString, IsEmail, IsOptional, IsEnum, IsBoolean, MinLength } from 'class-validator';
 import { Location, Timezone } from '@prisma/client';
 
 export class CreateUserDto {
@@ -7,6 +7,10 @@ export class CreateUserDto {
 
   @IsEmail()
   email!: string;
+
+  @IsString()
+  @MinLength(6)
+  password!: string;
 
   @IsOptional()
   @IsString()

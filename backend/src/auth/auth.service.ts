@@ -11,15 +11,31 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {}
 
-  async register(email: string, passwordRaw: string, name: string, location: Location, timezone: Timezone) {
-    const existingUser = await this.prisma.user.findUnique({ where: { email } });
+  async register(data: {
+    email: string;
+    password: string;
+    name: string;
+    location: Location;
+    timezone: Timezone;
+    whatsappNumber?: string;
+    isSubscribed?: boolean;
+  }) {
+    const existingUser = await this.prisma.user.findUnique({ where: { email: data.email } });
     if (existingUser) throw new ConflictException('Email is already in use.');
 
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(passwordRaw, salt);
+    const hashedPassword = await bcrypt.hash(data.password, salt);
 
     const newUser = await this.prisma.user.create({
-      data: { email, name, password: hashedPassword, location, timezone },
+      data: {
+        email: data.email,
+        name: data.name,
+        password: hashedPassword,
+        location: data.location,
+        timezone: data.timezone,
+        whatsappNumber: data.whatsappNumber,
+        isSubscribed: data.isSubscribed,
+      },
     });
 
     const { password, ...userWithoutPassword } = newUser;
