@@ -71,12 +71,7 @@ export default function Login() {
               className="mb-[18px] w-full rounded-[10px] border border-border bg-surface px-[15px] py-[13px] text-[15px] text-ink focus:border-border-strong focus:outline-none"
             />
 
-            <div className="mb-[7px] flex items-baseline justify-between gap-3">
-              <label className="text-[13px] font-semibold text-ink-muted">Password</label>
-              <Link to="/forgot-password" className="text-[12.5px] text-brass-dark hover:text-ink hover:underline">
-                Forgot?
-              </Link>
-            </div>
+            <label className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Password</label>
             <div className="relative mb-5">
               <input
                 type={showPassword ? 'text' : 'password'}

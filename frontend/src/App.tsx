@@ -6,6 +6,8 @@ import Dashboard from './pages/Dashboard.tsx';
 import PostRequest from './pages/PostRequest.tsx';
 import Matches from './pages/Matches.tsx';
 import Chat from './pages/Chat.tsx';
+import About from './pages/About.tsx';
+import Haskamas from './pages/Haskamas.tsx';
 import MainLayout from './components/MainLayout.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 
@@ -17,6 +19,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route element={<MainLayout />}>
           <Route path="/" element={<Landing />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/haskamas" element={<Haskamas />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/requests/new" element={<PostRequest />} />

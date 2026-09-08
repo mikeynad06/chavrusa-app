@@ -39,7 +39,7 @@ export class NotificationsService {
     console.log(`🔔 NEW NOTIFICATION`);
     console.log(`To: ${request.requester.email} (${request.requester.name})`);
     console.log(`Subject: Your Chavrusa request was claimed!`);
-    console.log(`Message: Hey ${request.requester.name}, great news! ${claimer.name} has agreed to learn ${request.topic} with you. Reach out to coordinate!`);
+    console.log(`Message: Hey ${request.requester.name}, great news! ${claimer.name} has agreed to learn ${request.topic} with you. Open your matches to start chatting: /matches/${payload.matchId}`);
     console.log('====================================================\n');
   }
 

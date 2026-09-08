@@ -17,7 +17,12 @@ export class UsersService {
 
   async findAllUsers() {
     return this.prisma.user.findMany({
-      include: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        location: true,
+        timezone: true,
         requests: true,
       },
     });
@@ -46,7 +51,14 @@ export class UsersService {
   async findUserById(id: string) {
     return this.prisma.user.findUnique({
       where: { id },
-      include: { requests: true },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        location: true,
+        timezone: true,
+        requests: true,
+      },
     });
   }
   async subscribeToTopic(userId: string, topic: string) {
