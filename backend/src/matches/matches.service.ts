@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { RequestStatus } from '@prisma/client';
@@ -75,5 +75,55 @@ export class MatchesService {
         },
       },
     });
+  }
+
+  async findMine(userId: string) {
+    return this.prisma.match.findMany({
+      where: {
+        OR: [{ matchedUserId: userId }, { request: { requesterId: userId } }],
+      },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        matchedUser: { select: { id: true, name: true } },
+        request: {
+          select: {
+            id: true,
+            topic: true,
+            seferOrTopic: true,
+            description: true,
+            requesterId: true,
+            requester: { select: { id: true, name: true } },
+          },
+        },
+      },
+    });
+  }
+
+  async findOne(matchId: string, userId: string) {
+    const match = await this.prisma.match.findUnique({
+      where: { id: matchId },
+      include: {
+        matchedUser: { select: { id: true, name: true } },
+        request: {
+          select: {
+            id: true,
+            topic: true,
+            seferOrTopic: true,
+            description: true,
+            requesterId: true,
+            requester: { select: { id: true, name: true } },
+          },
+        },
+      },
+    });
+
+    if (!match) {
+      throw new NotFoundException('Match not found.');
+    }
+    if (match.matchedUserId !== userId && match.request.requesterId !== userId) {
+      throw new ForbiddenException('You are not part of this match.');
+    }
+
+    return match;
   }
 }

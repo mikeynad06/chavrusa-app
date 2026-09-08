@@ -7,6 +7,7 @@ import { MatchesModule } from './matches/matches.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { AuthModule } from './auth/auth.module';
 import { StatsModule } from './stats/stats.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { StatsModule } from './stats/stats.module';
     RequestsModule,
     MatchesModule,
     NotificationsModule, AuthModule,
-    StatsModule
+    StatsModule,
+    ChatModule
   ],
   controllers: [],
   providers: [],

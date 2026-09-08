@@ -49,6 +49,9 @@ export default function Navbar() {
 
           {isAuthenticated ? (
             <>
+              <NavLink to="/matches" className={navLinkClassName}>
+                Matches
+              </NavLink>
               <button
                 type="button"
                 onClick={handleLogout}

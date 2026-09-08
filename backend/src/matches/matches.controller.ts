@@ -22,4 +22,16 @@ export class MatchesController {
   findAll() {
     return this.matchesService.findAll();
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('mine')
+  findMine(@GetUser() user: { userId: string }) {
+    return this.matchesService.findMine(user.userId);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get(':id')
+  findOne(@Param('id') id: string, @GetUser() user: { userId: string }) {
+    return this.matchesService.findOne(id, user.userId);
+  }
 }
