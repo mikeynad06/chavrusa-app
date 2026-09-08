@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Body, Param, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../auth/get-user.decorator';
 import { RequestsService } from './requests.service';
@@ -21,5 +21,11 @@ export class RequestsController {
   @Get()
   findAllOpen() {
     return this.requestsService.findAllOpen();
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Patch(':id/cancel')
+  cancel(@Param('id') id: string, @GetUser() user: { userId: string }) {
+    return this.requestsService.cancel(id, user.userId);
   }
 }

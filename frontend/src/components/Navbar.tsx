@@ -52,6 +52,9 @@ export default function Navbar() {
               <NavLink to="/matches" className={navLinkClassName}>
                 Matches
               </NavLink>
+              <NavLink to="/profile" className={navLinkClassName}>
+                Profile
+              </NavLink>
               <button
                 type="button"
                 onClick={handleLogout}

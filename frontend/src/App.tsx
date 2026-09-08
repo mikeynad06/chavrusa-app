@@ -8,6 +8,7 @@ import Matches from './pages/Matches.tsx';
 import Chat from './pages/Chat.tsx';
 import About from './pages/About.tsx';
 import Haskamas from './pages/Haskamas.tsx';
+import Profile from './pages/Profile.tsx';
 import MainLayout from './components/MainLayout.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 
@@ -26,6 +27,7 @@ function App() {
             <Route path="/requests/new" element={<PostRequest />} />
             <Route path="/matches" element={<Matches />} />
             <Route path="/matches/:matchId" element={<Chat />} />
+            <Route path="/profile" element={<Profile />} />
           </Route>
         </Route>
       </Routes>

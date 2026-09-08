@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Topic } from '@prisma/client';
 import { GetUser } from '../auth/get-user.decorator';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-users.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { SubscribeTopicDto, SubscribeLocationDto } from './dto/subscribe.dto';
 
 @Controller('users')
 export class UsersController {
@@ -24,21 +27,35 @@ export class UsersController {
   getDashboard(@GetUser() user: { userId: string }) {
     return this.usersService.getDashboard(user.userId);
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('me')
+  updateProfile(@GetUser() user: { userId: string }, @Body() dto: UpdateProfileDto) {
+    return this.usersService.updateProfile(user.userId, dto);
+  }
+
   @UseGuards(AuthGuard('jwt'))
   @Post('me/topics')
-  subscribeToTopic(
-    @GetUser() user: { userId: string }, 
-    @Body('topic') topic: string // Extracts just the "topic" field from the JSON body
-  ) {
-    return this.usersService.subscribeToTopic(user.userId, topic);
+  subscribeToTopic(@GetUser() user: { userId: string }, @Body() dto: SubscribeTopicDto) {
+    return this.usersService.subscribeToTopic(user.userId, dto.topic);
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('me/topics/:topic')
+  unsubscribeFromTopic(@GetUser() user: { userId: string }, @Param('topic') topic: Topic) {
+    return this.usersService.unsubscribeFromTopic(user.userId, topic);
+  }
+
   @UseGuards(AuthGuard('jwt'))
   @Post('me/locations')
-  subscribeToLocation(
-    @GetUser() user: { userId: string }, 
-    @Body('location') location: string
-  ) {
-    return this.usersService.subscribeToLocation(user.userId, location);
+  subscribeToLocation(@GetUser() user: { userId: string }, @Body() dto: SubscribeLocationDto) {
+    return this.usersService.subscribeToLocation(user.userId, dto.location);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('me/locations/:id')
+  unsubscribeFromLocation(@GetUser() user: { userId: string }, @Param('id') id: string) {
+    return this.usersService.unsubscribeFromLocation(user.userId, id);
   }
 
   @Get(':id')
