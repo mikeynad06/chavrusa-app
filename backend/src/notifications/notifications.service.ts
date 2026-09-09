@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
+import { Resend } from 'resend';
 import { PrismaService } from '../prisma/prisma.service';
 import { Topic, Location } from '@prisma/client';
+
+const FROM_ADDRESS = 'onboarding@resend.dev';
 
 interface RequestCreatedEvent {
   id: string;
@@ -18,6 +21,8 @@ interface MatchClaimedEvent {
 
 @Injectable()
 export class NotificationsService {
+  private readonly resend = new Resend(process.env.RESEND_API_KEY);
+
   constructor(private readonly prisma: PrismaService) {}
 
   @OnEvent('match.claimed')
@@ -34,13 +39,17 @@ export class NotificationsService {
 
     if (!request || !claimer) return;
 
-    // 2. Simulate sending a WhatsApp/Email alert
-    console.log('\n====================================================');
-    console.log(`🔔 NEW NOTIFICATION`);
-    console.log(`To: ${request.requester.email} (${request.requester.name})`);
-    console.log(`Subject: Your Chavrusa request was claimed!`);
-    console.log(`Message: Hey ${request.requester.name}, great news! ${claimer.name} has agreed to learn ${request.topic} with you. Open your matches to start chatting: /matches/${payload.matchId}`);
-    console.log('====================================================\n');
+    // 2. Send the email alert
+    const { error } = await this.resend.emails.send({
+      from: FROM_ADDRESS,
+      to: request.requester.email,
+      subject: 'Your Chavrusa request was claimed!',
+      text: `Hey ${request.requester.name}, great news! ${claimer.name} has agreed to learn ${request.topic} with you. Open your matches to start chatting: /matches/${payload.matchId}`,
+    });
+
+    if (error) {
+      console.error(`[NotificationsService] Failed to send match-claimed email to ${request.requester.email}:`, error);
+    }
   }
 
   @OnEvent('request.created')
@@ -73,7 +82,16 @@ export class NotificationsService {
 
     // 5. Send the targeted alerts
     for (const user of users) {
-      console.log(`🎯 [PERFECT MATCH] To: ${user.email} - A ${payload.topic} request was posted in ${payload.location}!`);
+      const { error } = await this.resend.emails.send({
+        from: FROM_ADDRESS,
+        to: user.email,
+        subject: `New ${payload.topic} request in ${payload.location}`,
+        text: `Hi ${user.name}, a new ${payload.topic} request was just posted in ${payload.location} — matching your topic and location subscriptions. Check it out and claim it before someone else does!`,
+      });
+
+      if (error) {
+        console.error(`[NotificationsService] Failed to send perfect-match email to ${user.email}:`, error);
+      }
     }
   }
 }

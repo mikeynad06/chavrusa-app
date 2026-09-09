@@ -116,11 +116,11 @@ model UserTopic {
 }
 
 model UserLocation {
-  id       String @id @default(uuid())
+  id       String   @id @default(uuid())
   userId   String
-  location String // e.g., "TEANECK", "JERUSALEM", "LAKEWOOD"
-  
-  user     User   @relation(fields: [userId], references: [id])
+  location Location
+
+  user     User     @relation(fields: [userId], references: [id])
 }
 
 model Request {
