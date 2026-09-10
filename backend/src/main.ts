@@ -16,6 +16,8 @@ async function bootstrap() {
   // This turns on the validation shield!
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
-  await app.listen(process.env.PORT || 3000);
+  const port = process.env.PORT || 3000;
+  console.log(`Listening on port: ${port}`);
+  await app.listen(port, '0.0.0.0');
 }
 bootstrap();
