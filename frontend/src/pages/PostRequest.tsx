@@ -162,8 +162,8 @@ export default function PostRequest() {
     e.preventDefault();
     setError('');
 
-    if (!draft.topic || !draft.level || !draft.style || !draft.timeSlot || !draft.timezone || !draft.description.trim()) {
-      setError('Please fill in topic, level, style, when you\'re free, your timezone, and a description.');
+    if (!draft.topic || !draft.level || !draft.style || !draft.timeSlot || !draft.timezone) {
+      setError('Please fill in topic, level, style, when you\'re free, and your timezone.');
       return;
     }
 

@@ -20,6 +20,7 @@ export class RequestsService {
     const newRequest = await this.prisma.request.create({
       data: {
         ...data,
+        description: data.description ?? '',
         requesterId: userId,
       },
     });

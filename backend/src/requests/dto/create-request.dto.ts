@@ -23,8 +23,9 @@ export class CreateRequestDto {
   @IsEnum(Language)
   language?: Language;
 
+  @IsOptional()
   @IsString()
-  description!: string;
+  description?: string;
 
   @IsOptional()
   @IsEnum(Location)
