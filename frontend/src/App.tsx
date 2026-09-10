@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login.tsx';
 import Register from './pages/Register.tsx';
+import AuthCallback from './pages/AuthCallback.tsx';
 import Landing from './pages/Landing.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import PostRequest from './pages/PostRequest.tsx';
@@ -18,6 +19,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
         <Route element={<MainLayout />}>
           <Route path="/" element={<Landing />} />
           <Route path="/about" element={<About />} />

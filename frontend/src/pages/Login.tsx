@@ -113,8 +113,10 @@ export default function Login() {
           <div className="flex flex-col gap-2.5">
             <button
               type="button"
-              disabled
-              className="w-full cursor-not-allowed rounded-full border border-border-strong bg-surface py-[13px] text-[15px] font-semibold text-ink opacity-60"
+              onClick={() => {
+                window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/auth/google`;
+              }}
+              className="w-full rounded-full border border-border-strong bg-surface py-[13px] text-[15px] font-semibold text-ink transition-colors hover:bg-surface-sunken"
             >
               Continue with Google
             </button>
