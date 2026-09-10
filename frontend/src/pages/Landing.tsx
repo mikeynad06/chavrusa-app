@@ -69,7 +69,9 @@ export default function Landing() {
         <div className="mx-auto max-w-[900px]">
           <span className="inline-block rounded-full border border-border bg-surface-sunken px-3.5 py-[7px] font-mono text-xs uppercase tracking-[0.12em] text-brass-dark">
             Learn with someone
-            {stats ? ` · ${stats.pairsMade.toLocaleString()} ${stats.pairsMade === 1 ? 'pair' : 'pairs'} made` : ''}
+            {typeof stats?.pairsMade === 'number'
+              ? ` · ${stats.pairsMade.toLocaleString()} ${stats.pairsMade === 1 ? 'pair' : 'pairs'} made`
+              : ''}
           </span>
           <h1
             className="mt-6 font-serif text-[clamp(42px,7vw,76px)] font-semibold leading-[1.03] tracking-[-0.025em] text-ink"

@@ -5,8 +5,8 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import type { PlatformStats } from '../types/stats';
 
-function formatAvgClaim(days: number | null): string {
-  if (days === null) return '—';
+function formatAvgClaim(days: number | null | undefined): string {
+  if (days === null || days === undefined) return '—';
   const rounded = Math.round(days);
   if (rounded < 1) return '<1 day';
   return `${rounded} ${rounded === 1 ? 'day' : 'days'}`;
@@ -158,13 +158,13 @@ export default function Login() {
         <div className="flex flex-wrap gap-[26px]">
           <div>
             <p className="font-serif text-[26px] text-surface">
-              {stats ? stats.pairsMade.toLocaleString() : '—'}
+              {stats?.pairsMade?.toLocaleString() ?? '—'}
             </p>
             <p className="mt-1 text-[13px] text-brass-light">pairs made</p>
           </div>
           <div>
             <p className="font-serif text-[26px] text-surface">
-              {stats ? formatAvgClaim(stats.avgClaimDays) : '—'}
+              {formatAvgClaim(stats?.avgClaimDays)}
             </p>
             <p className="mt-1 text-[13px] text-brass-light">average to a claim</p>
           </div>
