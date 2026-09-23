@@ -4,7 +4,7 @@ import { Resend } from 'resend';
 import { PrismaService } from '../prisma/prisma.service';
 import { Topic, Location } from '@prisma/client';
 
-const FROM_ADDRESS = 'onboarding@resend.dev';
+export const FROM_ADDRESS = 'onboarding@resend.dev';
 
 interface RequestCreatedEvent {
   id: string;

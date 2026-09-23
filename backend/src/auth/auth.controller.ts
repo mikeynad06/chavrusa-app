@@ -4,6 +4,8 @@ import type { Request, Response } from 'express';
 import type { Profile } from 'passport-google-oauth20';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-users.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,6 +20,18 @@ export class AuthController {
   @Post('login')
   login(@Body() body: any) {
     return this.authService.login(body.email, body.password);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('forgot-password')
+  forgotPassword(@Body() body: ForgotPasswordDto) {
+    return this.authService.forgotPassword(body.email);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('reset-password')
+  resetPassword(@Body() body: ResetPasswordDto) {
+    return this.authService.resetPassword(body.token, body.newPassword);
   }
 
   @Get('google')
