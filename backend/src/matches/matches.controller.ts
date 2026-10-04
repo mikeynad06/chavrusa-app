@@ -2,12 +2,13 @@ import { Controller, Post, Param, Get, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { MatchesService } from './matches.service';
 import { GetUser } from '../auth/get-user.decorator'; // <-- Import your custom decorator
+import { VerifiedEmailGuard } from '../auth/verified-email.guard';
 
 @Controller('matches')
 export class MatchesController {
   constructor(private readonly matchesService: MatchesService) {}
 
-  @UseGuards(AuthGuard('jwt')) // <-- This locks the route down!
+  @UseGuards(AuthGuard('jwt'), VerifiedEmailGuard) // <-- This locks the route down, and requires a verified email
   @Post('claim/:requestId')
   claim(
     @Param('requestId') requestId: string,

@@ -4,7 +4,9 @@ import { Resend } from 'resend';
 import { PrismaService } from '../prisma/prisma.service';
 import { Topic, Location } from '@prisma/client';
 
-export const FROM_ADDRESS = 'onboarding@resend.dev';
+export const FROM_ADDRESS = 'Chavrusa <noreply@findachavrusa.org>';
+// noreply@ isn't a real inbox, so route replies somewhere a person reads them.
+export const REPLY_TO_ADDRESS = 'mikeynad06@gmail.com';
 
 interface RequestCreatedEvent {
   id: string;
@@ -42,6 +44,7 @@ export class NotificationsService {
     // 2. Send the email alert
     const { error } = await this.resend.emails.send({
       from: FROM_ADDRESS,
+      replyTo: REPLY_TO_ADDRESS,
       to: request.requester.email,
       subject: 'Your Chavrusa request was claimed!',
       text: `Hey ${request.requester.name}, great news! ${claimer.name} has agreed to learn ${request.topic} with you. Open your matches to start chatting: /matches/${payload.matchId}`,
@@ -77,13 +80,14 @@ export class NotificationsService {
 
     // 4. Fetch all matched users in one query
     const users = await this.prisma.user.findMany({
-      where: { id: { in: perfectMatchIds } },
+      where: { id: { in: perfectMatchIds }, emailVerified: true, isSubscribed: true },
     });
 
     // 5. Send the targeted alerts
     for (const user of users) {
       const { error } = await this.resend.emails.send({
         from: FROM_ADDRESS,
+        replyTo: REPLY_TO_ADDRESS,
         to: user.email,
         subject: `New ${payload.topic} request in ${payload.location}`,
         text: `Hi ${user.name}, a new ${payload.topic} request was just posted in ${payload.location} — matching your topic and location subscriptions. Check it out and claim it before someone else does!`,

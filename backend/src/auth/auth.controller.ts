@@ -6,6 +6,8 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-users.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { VerifyEmailDto } from './dto/verify-email.dto';
+import { GetUser } from './get-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -32,6 +34,25 @@ export class AuthController {
   @Post('reset-password')
   resetPassword(@Body() body: ResetPasswordDto) {
     return this.authService.resetPassword(body.token, body.newPassword);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('verify-email')
+  verifyEmail(@Body() body: VerifyEmailDto) {
+    return this.authService.verifyEmail(body.token);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard('jwt'))
+  @Post('resend-verification')
+  resendVerification(@GetUser() user: { userId: string }) {
+    return this.authService.resendVerification(user.userId);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('verification-status')
+  verificationStatus(@GetUser() user: { userId: string }) {
+    return this.authService.getVerificationStatus(user.userId);
   }
 
   @Get('google')

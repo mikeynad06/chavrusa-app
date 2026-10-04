@@ -183,8 +183,13 @@ export default function PostRequest() {
       });
       localStorage.removeItem(DRAFT_KEY);
       navigate('/dashboard');
-    } catch {
-      setError('Could not post your request. Please try again.');
+    } catch (err) {
+      const status = (err as { response?: { status?: number } })?.response?.status;
+      setError(
+        status === 403
+          ? 'Please verify your email address before posting a request. Check your inbox for the link.'
+          : 'Could not post your request. Please try again.',
+      );
     } finally {
       setSubmitting(false);
     }

@@ -1,6 +1,7 @@
 import { Controller, Post, Get, Patch, Body, Param, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../auth/get-user.decorator';
+import { VerifiedEmailGuard } from '../auth/verified-email.guard';
 import { RequestsService } from './requests.service';
 import { CreateRequestDto } from './dto/create-request.dto'; // <-- 1. Import the DTO
 
@@ -8,7 +9,7 @@ import { CreateRequestDto } from './dto/create-request.dto'; // <-- 1. Import th
 export class RequestsController {
   constructor(private readonly requestsService: RequestsService) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), VerifiedEmailGuard)
   @Post()
   create(
     @Body() createRequestDto: CreateRequestDto, // <-- 2. Replace 'body: any' with this

@@ -9,6 +9,7 @@ export interface UserProfile {
   location: Location;
   timezone: Timezone;
   isSubscribed: boolean;
+  emailVerified: boolean;
   preferredTopics: { id: string; topic: Topic }[];
   subscribedLocations: { id: string; location: string }[];
   requests: StudyRequest[];

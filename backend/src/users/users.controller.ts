@@ -3,7 +3,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { Topic } from '@prisma/client';
 import { GetUser } from '../auth/get-user.decorator';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-users.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { SubscribeTopicDto, SubscribeLocationDto } from './dto/subscribe.dto';
 
@@ -11,11 +10,7 @@ import { SubscribeTopicDto, SubscribeLocationDto } from './dto/subscribe.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.createUser(createUserDto);
-  }
-
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   findAll() {
     return this.usersService.findAllUsers();
@@ -58,6 +53,7 @@ export class UsersController {
     return this.usersService.unsubscribeFromLocation(user.userId, id);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findUserById(id);
