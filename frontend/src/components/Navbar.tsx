@@ -1,6 +1,7 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import Logo from './Logo';
 import { useAuth } from '../context/AuthContext';
+import { SHOW_HASKAMAS } from '../config/features';
 
 const navLinkBase =
   'rounded-full px-3.5 py-2.5 text-[14.5px] transition-colors hover:bg-surface-alt';
@@ -43,9 +44,11 @@ export default function Navbar() {
           <NavLink to="/about" className={navLinkClassName}>
             About
           </NavLink>
-          <NavLink to="/haskamas" className={navLinkClassName}>
-            Haskamas
-          </NavLink>
+          {SHOW_HASKAMAS && (
+            <NavLink to="/haskamas" className={navLinkClassName}>
+              Haskamas
+            </NavLink>
+          )}
 
           {isAuthenticated ? (
             <>

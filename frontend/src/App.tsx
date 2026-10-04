@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { SHOW_HASKAMAS } from './config/features.ts';
 import Login from './pages/Login.tsx';
 import Register from './pages/Register.tsx';
 import ForgotPassword from './pages/ForgotPassword.tsx';
@@ -29,7 +30,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<Landing />} />
           <Route path="/about" element={<About />} />
-          <Route path="/haskamas" element={<Haskamas />} />
+          <Route path="/haskamas" element={SHOW_HASKAMAS ? <Haskamas /> : <Navigate to="/" replace />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/requests/new" element={<PostRequest />} />

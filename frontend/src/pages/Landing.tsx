@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import Reveal from '../components/Reveal';
 import { HASKAMA_QUOTES } from '../data/haskamas';
+import { SHOW_PHOTOS, SHOW_TESTIMONIALS, SHOW_HASKAMAS } from '../config/features';
 import type { PlatformStats } from '../types/stats';
 
 const HOW_IT_WORKS = [
@@ -144,73 +145,80 @@ export default function Landing() {
         </section>
       </Reveal>
 
-      <Reveal>
-        <section className="border-t border-border bg-surface">
-          <div className="mx-auto max-w-[1180px] px-6 py-[76px]">
-            <span className="font-mono text-xs uppercase tracking-[0.12em] text-brass-dark">
-              In the beis medrash
-            </span>
-            <h2 className="mt-3 mb-[30px] font-serif text-[clamp(26px,3.2vw,38px)] font-semibold tracking-[-0.02em] text-ink">
-              Chavrusas, mid-shakla v'tarya.
-            </h2>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] auto-rows-[190px] gap-3.5">
-              {PHOTO_GRID.map((tile) => (
-                <div
-                  key={tile.caption}
-                  className={
-                    tile.big
-                      ? 'col-span-2 row-span-2 flex items-end rounded-2xl border border-border p-4'
-                      : 'flex items-end rounded-2xl border border-border p-3.5'
-                  }
-                  style={{ backgroundImage: STRIPE_BG }}
-                >
-                  <span className="rounded-lg border border-border bg-surface px-3 py-1.5 font-mono text-[11.5px] text-brass-dark">
-                    {tile.caption}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      </Reveal>
-
-      <Reveal>
-        <section className="border-t border-border bg-ink text-on-dark">
-          <div className="mx-auto max-w-[1180px] px-6 py-[76px]">
-            <div className="mb-9 flex flex-wrap items-end justify-between gap-5">
-              <div>
-                <p dir="rtl" className="font-hebrew text-[22px] text-brass-light">
-                  הסכמות
-                </p>
-                <h2 className="mt-2 font-serif text-[clamp(26px,3.2vw,38px)] font-semibold tracking-[-0.02em] text-surface">
-                  With rabbinic endorsement.
-                </h2>
+      {SHOW_PHOTOS && (
+        <Reveal>
+          <section className="border-t border-border bg-surface">
+            <div className="mx-auto max-w-[1180px] px-6 py-[76px]">
+              <span className="font-mono text-xs uppercase tracking-[0.12em] text-brass-dark">
+                In the beis medrash
+              </span>
+              <h2 className="mt-3 mb-[30px] font-serif text-[clamp(26px,3.2vw,38px)] font-semibold tracking-[-0.02em] text-ink">
+                Chavrusas, mid-shakla v'tarya.
+              </h2>
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] auto-rows-[190px] gap-3.5">
+                {PHOTO_GRID.map((tile) => (
+                  <div
+                    key={tile.caption}
+                    className={
+                      tile.big
+                        ? 'col-span-2 row-span-2 flex items-end rounded-2xl border border-border p-4'
+                        : 'flex items-end rounded-2xl border border-border p-3.5'
+                    }
+                    style={{ backgroundImage: STRIPE_BG }}
+                  >
+                    <span className="rounded-lg border border-border bg-surface px-3 py-1.5 font-mono text-[11.5px] text-brass-dark">
+                      {tile.caption}
+                    </span>
+                  </div>
+                ))}
               </div>
-              <Link to="/haskamas" className="text-[14.5px] font-semibold text-[#e8dfcc] hover:text-surface">
-                Read all haskamas
-              </Link>
             </div>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(270px,1fr))] gap-5">
-              {HASKAMA_QUOTES.map((h) => (
-                <div
-                  key={h.name}
-                  className="rounded-2xl border p-[26px]"
-                  style={{ borderColor: 'rgba(232,223,204,0.2)', background: 'rgba(232,223,204,0.05)' }}
-                >
-                  <p className="mb-4.5 font-serif text-[18px] italic leading-[1.6] text-[#f4eee0]">
-                    "{h.quote}"
+          </section>
+        </Reveal>
+      )}
+
+      {SHOW_HASKAMAS && (
+        <Reveal>
+          <section className="border-t border-border bg-ink text-on-dark">
+            <div className="mx-auto max-w-[1180px] px-6 py-[76px]">
+              <div className="mb-9 flex flex-wrap items-end justify-between gap-5">
+                <div>
+                  <p dir="rtl" className="font-hebrew text-[22px] text-brass-light">
+                    הסכמות
                   </p>
-                  <p className="text-[14.5px] font-semibold text-surface">{h.name}</p>
-                  <p className="mt-1 text-[13.5px] text-brass-light">{h.title}</p>
+                  <h2 className="mt-2 font-serif text-[clamp(26px,3.2vw,38px)] font-semibold tracking-[-0.02em] text-surface">
+                    With rabbinic endorsement.
+                  </h2>
                 </div>
-              ))}
+                <Link to="/haskamas" className="text-[14.5px] font-semibold text-[#e8dfcc] hover:text-surface">
+                  Read all haskamas
+                </Link>
+              </div>
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(270px,1fr))] gap-5">
+                {HASKAMA_QUOTES.map((h) => (
+                  <div
+                    key={h.name}
+                    className="rounded-2xl border p-[26px]"
+                    style={{ borderColor: 'rgba(232,223,204,0.2)', background: 'rgba(232,223,204,0.05)' }}
+                  >
+                    <p className="mb-4.5 font-serif text-[18px] italic leading-[1.6] text-[#f4eee0]">
+                      "{h.quote}"
+                    </p>
+                    <p className="text-[14.5px] font-semibold text-surface">{h.name}</p>
+                    <p className="mt-1 text-[13.5px] text-brass-light">{h.title}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
-      </Reveal>
+          </section>
+        </Reveal>
+      )}
 
       <Reveal>
-        <section className="border-y border-border bg-surface-sunken">
+        {/* With no testimonials below, the footer sits right under this section, so drop the bottom border. */}
+        <section
+          className={`${SHOW_TESTIMONIALS ? 'border-y' : 'border-t'} border-border bg-surface-sunken`}
+        >
           <div className="mx-auto grid max-w-[1180px] grid-cols-[repeat(auto-fit,minmax(300px,1fr))] items-center gap-12 px-6 py-[72px]">
             <div>
               <span className="font-mono text-xs uppercase tracking-[0.12em] text-brass-dark">
@@ -265,20 +273,22 @@ export default function Landing() {
         </section>
       </Reveal>
 
-      <Reveal>
-        <section className="mx-auto max-w-[1180px] px-6 py-[84px]">
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-7">
-            {TESTIMONIALS.map((t) => (
-              <blockquote key={t.attribution} className="m-0 border-brass pl-5" style={{ borderInlineStart: '2px solid #8a6a3c' }}>
-                <p className="mb-3.5 font-serif text-[21px] italic leading-[1.5] text-ink" style={{ textWrap: 'pretty' }}>
-                  "{t.quote}"
-                </p>
-                <footer className="text-[14px] text-ink-muted">{t.attribution}</footer>
-              </blockquote>
-            ))}
-          </div>
-        </section>
-      </Reveal>
+      {SHOW_TESTIMONIALS && (
+        <Reveal>
+          <section className="mx-auto max-w-[1180px] px-6 py-[84px]">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-7">
+              {TESTIMONIALS.map((t) => (
+                <blockquote key={t.attribution} className="m-0 border-brass pl-5" style={{ borderInlineStart: '2px solid #8a6a3c' }}>
+                  <p className="mb-3.5 font-serif text-[21px] italic leading-[1.5] text-ink" style={{ textWrap: 'pretty' }}>
+                    "{t.quote}"
+                  </p>
+                  <footer className="text-[14px] text-ink-muted">{t.attribution}</footer>
+                </blockquote>
+              ))}
+            </div>
+          </section>
+        </Reveal>
+      )}
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { SHOW_PHOTOS } from '../config/features';
 import type { PlatformStats } from '../types/stats';
 
 function formatAvgClaim(days: number | null | undefined): string {
@@ -150,17 +151,19 @@ export default function Login() {
           </p>
         </div>
 
-        <div
-          className="flex h-[200px] items-end rounded-2xl border border-[rgba(232,223,204,0.2)] p-3.5"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(135deg, rgba(232,223,204,0.06) 0 10px, transparent 10px 20px)',
-          }}
-        >
-          <span className="font-mono text-[11.5px] text-brass-light">
-            photo: beis medrash at night
-          </span>
-        </div>
+        {SHOW_PHOTOS && (
+          <div
+            className="flex h-[200px] items-end rounded-2xl border border-[rgba(232,223,204,0.2)] p-3.5"
+            style={{
+              backgroundImage:
+                'repeating-linear-gradient(135deg, rgba(232,223,204,0.06) 0 10px, transparent 10px 20px)',
+            }}
+          >
+            <span className="font-mono text-[11.5px] text-brass-light">
+              photo: beis medrash at night
+            </span>
+          </div>
+        )}
 
         <div className="flex flex-wrap gap-[26px]">
           <div>

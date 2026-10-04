@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { SHOW_HASKAMAS } from '../config/features';
 
 export default function Footer() {
   return (
@@ -9,9 +10,11 @@ export default function Footer() {
           <Link to="/about" className="text-neutral-on-dark hover:text-[#e8dfcc]">
             About
           </Link>
-          <Link to="/haskamas" className="text-neutral-on-dark hover:text-[#e8dfcc]">
-            Haskamas
-          </Link>
+          {SHOW_HASKAMAS && (
+            <Link to="/haskamas" className="text-neutral-on-dark hover:text-[#e8dfcc]">
+              Haskamas
+            </Link>
+          )}
           <Link to="/dashboard" className="text-neutral-on-dark hover:text-[#e8dfcc]">
             Dashboard
           </Link>
