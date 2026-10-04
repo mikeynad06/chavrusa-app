@@ -11,7 +11,8 @@ export default function AuthCallback() {
   useEffect(() => {
     if (token) {
       login(token);
-      navigate('/dashboard');
+      // Replace, so the ?token=… URL doesn't stay in history behind the back button.
+      navigate('/dashboard', { replace: true });
     }
   }, [token, login, navigate]);
 
