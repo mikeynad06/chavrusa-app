@@ -8,6 +8,7 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { GetUser } from './get-user.decorator';
+import { GoogleCallbackGuard } from './google-callback.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -62,10 +63,21 @@ export class AuthController {
   }
 
   @Get('google/callback')
-  @UseGuards(AuthGuard('google'))
+  @UseGuards(GoogleCallbackGuard)
   async googleCallback(@Req() req: Request, @Res() res: Response) {
-    const { access_token } = await this.authService.loginWithGoogle(req.user as Profile);
     const frontendUrl = process.env.FRONTEND_URL?.split(',')[0].trim() || 'http://localhost:5173';
-    res.redirect(`${frontendUrl}/auth/callback?token=${access_token}`);
+    // Any failure goes back to /auth/callback without a token, which shows the "didn't go through" page.
+    const failureRedirect = `${frontendUrl}/auth/callback?error=google`;
+
+    const profile = req.user as Profile | null | undefined;
+    if (!profile) return res.redirect(failureRedirect);
+
+    try {
+      const { access_token } = await this.authService.loginWithGoogle(profile);
+      res.redirect(`${frontendUrl}/auth/callback?token=${access_token}`);
+    } catch (err) {
+      console.error('[AuthController] Google login failed:', err);
+      res.redirect(failureRedirect);
+    }
   }
 }
