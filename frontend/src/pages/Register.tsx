@@ -4,6 +4,7 @@ import { Eye, EyeOff, ChevronDown } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { SHOW_PHOTOS } from '../config/features';
+import GoogleButton from '../components/GoogleButton';
 import { humanizeEnum } from '../lib/format';
 import type { Location, Timezone } from '../types/request';
 
@@ -206,6 +207,16 @@ export default function Register() {
               {submitting ? 'Creating account…' : 'Create account'}
             </button>
           </form>
+
+          <div className="my-6 flex items-center gap-3">
+            <span className="h-px flex-1 bg-border" />
+            <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-brass-light">
+              or
+            </span>
+            <span className="h-px flex-1 bg-border" />
+          </div>
+
+          <GoogleButton />
 
           <p className="mt-[26px] text-[14px] text-ink-muted">
             Already have an account?{' '}

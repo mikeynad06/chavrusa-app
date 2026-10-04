@@ -4,6 +4,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { SHOW_PHOTOS } from '../config/features';
+import GoogleButton from '../components/GoogleButton';
 import type { PlatformStats } from '../types/stats';
 
 function formatAvgClaim(days: number | null | undefined): string {
@@ -116,17 +117,7 @@ export default function Login() {
             <span className="h-px flex-1 bg-border" />
           </div>
 
-          <div className="flex flex-col gap-2.5">
-            <button
-              type="button"
-              onClick={() => {
-                window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/auth/google`;
-              }}
-              className="w-full rounded-full border border-border-strong bg-surface py-[13px] text-[15px] font-semibold text-ink transition-colors hover:bg-surface-sunken"
-            >
-              Continue with Google
-            </button>
-          </div>
+          <GoogleButton />
 
           <p className="mt-[26px] text-[14px] text-ink-muted">
             New here?{' '}
