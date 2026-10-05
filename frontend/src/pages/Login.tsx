@@ -61,15 +61,16 @@ export default function Login() {
           <h1 className="mt-3 mb-1.5 font-serif text-[38px] font-semibold leading-[1.1] tracking-[-0.02em] text-ink">
             Log in
           </h1>
-          <p dir="rtl" className="mb-[30px] font-hebrew text-[19px] text-brass">
+          <p dir="rtl" lang="he" className="mb-[30px] font-hebrew text-[19px] text-brass">
             כניסה לחשבון
           </p>
 
           <form onSubmit={handleLogin}>
-            <label className="mb-[7px] block text-[13px] font-semibold text-ink-muted">
+            <label htmlFor="login-email" className="mb-[7px] block text-[13px] font-semibold text-ink-muted">
               Email
             </label>
             <input
+              id="login-email"
               type="email"
               placeholder="you@example.com"
               value={email}
@@ -79,13 +80,14 @@ export default function Login() {
             />
 
             <div className="mb-[7px] flex items-center justify-between">
-              <label className="text-[13px] font-semibold text-ink-muted">Password</label>
+              <label htmlFor="login-password" className="text-[13px] font-semibold text-ink-muted">Password</label>
               <Link to="/forgot-password" className="text-[13px] font-semibold text-brass-dark hover:text-ink hover:underline">
                 Forgot password?
               </Link>
             </div>
             <div className="relative mb-5">
               <input
+                id="login-password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 value={password}
@@ -103,7 +105,7 @@ export default function Login() {
               </button>
             </div>
 
-            {error && <p className="mb-4 text-[13.5px] text-red-700">{error}</p>}
+            {error && <p role="alert" className="mb-4 text-[13.5px] text-red-700">{error}</p>}
 
             <button
               type="submit"
@@ -136,7 +138,7 @@ export default function Login() {
 
       <div className="flex flex-col justify-center gap-7 bg-ink px-10 py-16 text-on-dark">
         <div>
-          <p dir="rtl" className="font-hebrew text-[26px] leading-[1.4] text-surface">
+          <p dir="rtl" lang="he" className="font-hebrew text-[26px] leading-[1.4] text-surface">
             שְׁנַיִם שֶׁיּוֹשְׁבִין וְיֵשׁ בֵּינֵיהֶם דִּבְרֵי תוֹרָה, שְׁכִינָה שְׁרוּיָה בֵּינֵיהֶם
           </p>
           <p className="mt-3 font-serif text-[19px] italic leading-[1.5] text-[#e8dfcc]">

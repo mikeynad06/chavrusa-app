@@ -16,7 +16,7 @@ export default function NotFound() {
       <h1 className="mt-3 font-serif text-[clamp(30px,3.8vw,44px)] font-semibold leading-[1.1] tracking-[-0.02em] text-ink">
         We couldn't find that page.
       </h1>
-      <p dir="rtl" className="mt-3 font-hebrew text-[20px] text-brass">
+      <p dir="rtl" lang="he" className="mt-3 font-hebrew text-[20px] text-brass">
         הַדַּף לֹא נִמְצָא
       </p>
       <p className="mx-auto mt-5 max-w-[460px] text-[16.5px] leading-[1.7] text-ink-muted">

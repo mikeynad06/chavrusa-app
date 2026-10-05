@@ -3,7 +3,7 @@ import { HASKAMA_QUOTES } from '../data/haskamas';
 export default function Haskamas() {
   return (
     <div className="mx-auto max-w-[900px] px-6 pb-[84px] pt-16">
-      <p dir="rtl" className="font-hebrew text-[22px] text-brass">
+      <p dir="rtl" lang="he" className="font-hebrew text-[22px] text-brass">
         הסכמות
       </p>
       <h1 className="mt-2 font-serif text-[clamp(28px,3.4vw,40px)] font-semibold tracking-[-0.02em] text-ink">

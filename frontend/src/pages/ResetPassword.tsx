@@ -53,11 +53,12 @@ export default function ResetPassword() {
           </p>
         ) : (
           <form onSubmit={handleSubmit} className="mt-[30px]">
-            <label className="mb-[7px] block text-[13px] font-semibold text-ink-muted">
+            <label htmlFor="reset-password" className="mb-[7px] block text-[13px] font-semibold text-ink-muted">
               New password
             </label>
             <div className="relative mb-5">
               <input
+                id="reset-password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 value={newPassword}
@@ -77,7 +78,7 @@ export default function ResetPassword() {
             </div>
 
             {error && (
-              <p className="mb-4 text-[13.5px] text-red-700">
+              <p role="alert" className="mb-4 text-[13.5px] text-red-700">
                 {error}{' '}
                 <Link to="/forgot-password" className="font-semibold underline">
                   Request a new link

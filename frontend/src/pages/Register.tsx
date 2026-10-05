@@ -93,13 +93,14 @@ export default function Register() {
           <h1 className="mt-3 mb-1.5 font-serif text-[38px] font-semibold leading-[1.1] tracking-[-0.02em] text-ink">
             Create an account
           </h1>
-          <p dir="rtl" className="mb-[30px] font-hebrew text-[19px] text-brass">
+          <p dir="rtl" lang="he" className="mb-[30px] font-hebrew text-[19px] text-brass">
             הרשמה
           </p>
 
           <form onSubmit={handleRegister}>
-            <label className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Name</label>
+            <label htmlFor="register-name" className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Name</label>
             <input
+              id="register-name"
               type="text"
               placeholder="Your name"
               value={name}
@@ -108,8 +109,9 @@ export default function Register() {
               className="mb-[18px] w-full rounded-[10px] border border-border bg-surface px-[15px] py-[13px] text-[15px] text-ink focus:border-border-strong focus:outline-none"
             />
 
-            <label className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Email</label>
+            <label htmlFor="register-email" className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Email</label>
             <input
+              id="register-email"
               type="email"
               placeholder="you@example.com"
               value={email}
@@ -118,9 +120,10 @@ export default function Register() {
               className="mb-[18px] w-full rounded-[10px] border border-border bg-surface px-[15px] py-[13px] text-[15px] text-ink focus:border-border-strong focus:outline-none"
             />
 
-            <label className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Password</label>
+            <label htmlFor="register-password" className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Password</label>
             <div className="relative mb-[18px]">
               <input
+                id="register-password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="At least 6 characters"
                 value={password}
@@ -141,9 +144,10 @@ export default function Register() {
 
             <div className="mb-[18px] grid grid-cols-2 gap-3">
               <div>
-                <label className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Location</label>
+                <label htmlFor="register-location" className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Location</label>
                 <div className="relative">
                   <select
+                    id="register-location"
                     value={location}
                     onChange={(e) => setLocation(e.target.value as Location)}
                     required
@@ -165,9 +169,10 @@ export default function Register() {
                 </div>
               </div>
               <div>
-                <label className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Timezone</label>
+                <label htmlFor="register-timezone" className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Timezone</label>
                 <div className="relative">
                   <select
+                    id="register-timezone"
                     value={timezone}
                     onChange={(e) => setTimezone(e.target.value as Timezone)}
                     required
@@ -190,10 +195,11 @@ export default function Register() {
               </div>
             </div>
 
-            <label className="mb-[7px] block text-[13px] font-semibold text-ink-muted">
+            <label htmlFor="register-whatsapp" className="mb-[7px] block text-[13px] font-semibold text-ink-muted">
               WhatsApp number <span className="font-normal text-ink-muted">(optional)</span>
             </label>
             <input
+              id="register-whatsapp"
               type="tel"
               placeholder="+1 555 000 0000"
               value={whatsappNumber}
@@ -201,7 +207,7 @@ export default function Register() {
               className="mb-5 w-full rounded-[10px] border border-border bg-surface px-[15px] py-[13px] text-[15px] text-ink focus:border-border-strong focus:outline-none"
             />
 
-            {error && <p className="mb-4 text-[13.5px] text-red-700">{error}</p>}
+            {error && <p role="alert" className="mb-4 text-[13.5px] text-red-700">{error}</p>}
 
             <button
               type="submit"
@@ -233,7 +239,7 @@ export default function Register() {
 
       <div className="flex flex-col justify-center gap-7 bg-ink px-10 py-16 text-on-dark">
         <div>
-          <p dir="rtl" className="font-hebrew text-[26px] leading-[1.4] text-surface">
+          <p dir="rtl" lang="he" className="font-hebrew text-[26px] leading-[1.4] text-surface">
             שְׁנַיִם שֶׁיּוֹשְׁבִין וְיֵשׁ בֵּינֵיהֶם דִּבְרֵי תוֹרָה, שְׁכִינָה שְׁרוּיָה בֵּינֵיהֶם
           </p>
           <p className="mt-3 font-serif text-[19px] italic leading-[1.5] text-[#e8dfcc]">

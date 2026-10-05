@@ -47,10 +47,11 @@ export default function ForgotPassword() {
               Enter your email and we'll send you a link to reset your password.
             </p>
             <form onSubmit={handleSubmit}>
-              <label className="mb-[7px] block text-[13px] font-semibold text-ink-muted">
+              <label htmlFor="forgot-email" className="mb-[7px] block text-[13px] font-semibold text-ink-muted">
                 Email
               </label>
               <input
+                id="forgot-email"
                 type="email"
                 placeholder="you@example.com"
                 value={email}

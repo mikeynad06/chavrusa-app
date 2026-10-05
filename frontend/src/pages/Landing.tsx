@@ -80,7 +80,7 @@ export default function Landing() {
           >
             Nobody should have to learn alone.
           </h1>
-          <p dir="rtl" className="mt-3.5 font-hebrew text-[clamp(20px,3vw,28px)] text-brass">
+          <p dir="rtl" lang="he" className="mt-3.5 font-hebrew text-[clamp(20px,3vw,28px)] text-brass">
             קְנֵה לְךָ חָבֵר
           </p>
           <p
@@ -183,7 +183,7 @@ export default function Landing() {
             <div className="mx-auto max-w-[1180px] px-6 py-[76px]">
               <div className="mb-9 flex flex-wrap items-end justify-between gap-5">
                 <div>
-                  <p dir="rtl" className="font-hebrew text-[22px] text-brass-light">
+                  <p dir="rtl" lang="he" className="font-hebrew text-[22px] text-brass-light">
                     הסכמות
                   </p>
                   <h2 className="mt-2 font-serif text-[clamp(26px,3.2vw,38px)] font-semibold tracking-[-0.02em] text-surface">

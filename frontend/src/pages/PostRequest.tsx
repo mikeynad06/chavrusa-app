@@ -114,10 +114,14 @@ function loadDraft(): DraftState {
 }
 
 function Select({
+  id,
+  ariaLabel,
   value,
   onChange,
   children,
 }: {
+  id?: string;
+  ariaLabel?: string;
   value: string;
   onChange: (v: string) => void;
   children: React.ReactNode;
@@ -125,6 +129,8 @@ function Select({
   return (
     <div className="relative">
       <select
+        id={id}
+        aria-label={ariaLabel}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="w-full appearance-none rounded-[10px] border border-border bg-bg px-[15px] py-[13px] text-[15px] text-ink focus:border-border-strong focus:outline-none"
@@ -133,6 +139,7 @@ function Select({
       </select>
       <ChevronDown
         size={16}
+        aria-hidden="true"
         className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-brass-light"
       />
     </div>
@@ -217,8 +224,8 @@ export default function PostRequest() {
             Say what you want to learn. Someone claims it, and we hand over your details.
           </p>
 
-          <label className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Topic</label>
-          <Select value={draft.topic} onChange={(v) => set('topic', v as Topic)}>
+          <label htmlFor="post-topic" className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Topic</label>
+          <Select id="post-topic" value={draft.topic} onChange={(v) => set('topic', v as Topic)}>
             <option value="" disabled>
               Select a topic
             </option>
@@ -229,26 +236,29 @@ export default function PostRequest() {
             ))}
           </Select>
 
-          <label className="mt-[22px] mb-[7px] block text-[13px] font-semibold text-ink-muted">
+          <label htmlFor="post-title" className="mt-[22px] mb-[7px] block text-[13px] font-semibold text-ink-muted">
             What do you want to learn?
           </label>
           <input
+            id="post-title"
+            aria-describedby="post-title-hint"
             value={draft.seferOrTopic}
             onChange={(e) => set('seferOrTopic', e.target.value)}
             placeholder="Bava Metzia — second perek"
             className="w-full rounded-[10px] border border-border-strong bg-bg px-[15px] py-[13px] text-[15.5px] text-ink focus:border-ink focus:outline-none"
           />
-          <p className="mb-[22px] mt-2 font-mono text-[11.5px] text-brass">
+          <p id="post-title-hint" className="mb-[22px] mt-2 font-mono text-[11.5px] text-brass">
             A masechta, a sefer, or just "something in mussar"
           </p>
 
-          <label className="mb-2.5 block text-[13px] font-semibold text-ink-muted">Level</label>
-          <div className="mb-[22px] flex flex-wrap gap-2">
+          <p id="post-level-label" className="mb-2.5 block text-[13px] font-semibold text-ink-muted">Level</p>
+          <div role="group" aria-labelledby="post-level-label" className="mb-[22px] flex flex-wrap gap-2">
             {LEVEL_OPTIONS.map((opt) => (
               <button
                 key={opt.value}
                 type="button"
                 onClick={() => set('level', opt.value)}
+                aria-pressed={draft.level === opt.value}
                 className={
                   draft.level === opt.value
                     ? 'rounded-full bg-ink px-[15px] py-2.5 text-[13.5px] font-semibold text-surface'
@@ -262,8 +272,8 @@ export default function PostRequest() {
 
           <div className="mb-[22px] grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-[18px]">
             <div>
-              <label className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Style</label>
-              <Select value={draft.style} onChange={(v) => set('style', v as LearningStyle)}>
+              <label htmlFor="post-style" className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Style</label>
+              <Select id="post-style" value={draft.style} onChange={(v) => set('style', v as LearningStyle)}>
                 <option value="" disabled>
                   Select a style
                 </option>
@@ -275,8 +285,8 @@ export default function PostRequest() {
               </Select>
             </div>
             <div>
-              <label className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Language</label>
-              <Select value={draft.language} onChange={(v) => set('language', v as Language)}>
+              <label htmlFor="post-language" className="mb-[7px] block text-[13px] font-semibold text-ink-muted">Language</label>
+              <Select id="post-language" value={draft.language} onChange={(v) => set('language', v as Language)}>
                 <option value="">No preference</option>
                 {LANGUAGE_OPTIONS.map((l) => (
                   <option key={l} value={l}>
@@ -287,15 +297,16 @@ export default function PostRequest() {
             </div>
           </div>
 
-          <label className="mb-2.5 block text-[13px] font-semibold text-ink-muted">
+          <p id="post-time-label" className="mb-2.5 block text-[13px] font-semibold text-ink-muted">
             When are you free?
-          </label>
-          <div className="mb-[22px] flex flex-wrap gap-2">
+          </p>
+          <div role="group" aria-labelledby="post-time-label" className="mb-[22px] flex flex-wrap gap-2">
             {TIME_SLOT_OPTIONS.map((opt) => (
               <button
                 key={opt.value}
                 type="button"
                 onClick={() => set('timeSlot', opt.value)}
+                aria-pressed={draft.timeSlot === opt.value}
                 className={
                   draft.timeSlot === opt.value
                     ? 'rounded-full bg-brass px-3.5 py-2 text-[13px] font-semibold text-surface'
@@ -307,11 +318,11 @@ export default function PostRequest() {
             ))}
           </div>
 
-          <label className="mb-[7px] block text-[13px] font-semibold text-ink-muted">
+          <label htmlFor="post-timezone" className="mb-[7px] block text-[13px] font-semibold text-ink-muted">
             Your timezone
           </label>
           <div className="mb-[22px] max-w-[220px]">
-            <Select value={draft.timezone} onChange={(v) => set('timezone', v as Timezone)}>
+            <Select id="post-timezone" value={draft.timezone} onChange={(v) => set('timezone', v as Timezone)}>
               <option value="" disabled>
                 Select a timezone
               </option>
@@ -323,13 +334,14 @@ export default function PostRequest() {
             </Select>
           </div>
 
-          <label className="mb-2.5 block text-[13px] font-semibold text-ink-muted">Where</label>
-          <div className="mb-3.5 grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-2.5">
+          <p id="post-where-label" className="mb-2.5 block text-[13px] font-semibold text-ink-muted">Where</p>
+          <div role="group" aria-labelledby="post-where-label" className="mb-3.5 grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-2.5">
             {MODALITY_OPTIONS.map((opt) => (
               <button
                 key={opt.value}
                 type="button"
                 onClick={() => set('modality', opt.value)}
+                aria-pressed={draft.modality === opt.value}
                 className={
                   draft.modality === opt.value
                     ? 'rounded-xl border border-ink bg-surface-sunken p-3.5 text-left'
@@ -344,7 +356,7 @@ export default function PostRequest() {
 
           {draft.modality !== 'ONLINE' && (
             <div className="mb-[22px] max-w-[300px]">
-              <Select value={draft.location} onChange={(v) => set('location', v as Location)}>
+              <Select ariaLabel="Location" value={draft.location} onChange={(v) => set('location', v as Location)}>
                 <option value="">No specific location</option>
                 {LOCATION_OPTIONS.map((loc) => (
                   <option key={loc} value={loc}>
@@ -355,10 +367,11 @@ export default function PostRequest() {
             </div>
           )}
 
-          <label className="mb-[7px] block text-[13px] font-semibold text-ink-muted">
+          <label htmlFor="post-description" className="mb-[7px] block text-[13px] font-semibold text-ink-muted">
             Anything else?
           </label>
           <textarea
+            id="post-description"
             rows={3}
             value={draft.description}
             onChange={(e) => set('description', e.target.value)}
@@ -366,7 +379,7 @@ export default function PostRequest() {
             className="w-full resize-y rounded-[10px] border border-border bg-bg px-[15px] py-[13px] text-[15px] text-ink focus:border-border-strong focus:outline-none"
           />
 
-          {error && <p className="mt-4 text-[13.5px] text-red-700">{error}</p>}
+          {error && <p role="alert" className="mt-4 text-[13.5px] text-red-700">{error}</p>}
 
           <div className="mt-[26px] flex flex-wrap items-center gap-3 border-t border-surface-alt pt-[22px]">
             <button
@@ -395,9 +408,9 @@ export default function PostRequest() {
               Live preview
             </p>
             <div className="flex items-start justify-between gap-2.5">
-              <h3 className="min-w-0 font-serif text-[20px] font-semibold text-ink">
+              <h2 className="min-w-0 font-serif text-[20px] font-semibold text-ink">
                 {previewTitle}
-              </h3>
+              </h2>
               <span className="whitespace-nowrap rounded-full border border-border bg-surface-alt px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-[0.08em] text-brass-dark">
                 New
               </span>
@@ -420,9 +433,9 @@ export default function PostRequest() {
           </div>
 
           <div className="rounded-2xl border border-border bg-surface-sunken p-[22px]">
-            <h4 className="mb-2.5 font-serif text-[18px] font-semibold text-ink">
+            <h2 className="mb-2.5 font-serif text-[18px] font-semibold text-ink">
               What makes a request get claimed
-            </h4>
+            </h2>
             <ul className="list-disc space-y-1 pl-[18px] text-[14px] leading-[1.65] text-ink-muted">
               <li>Name a specific sefer or perek</li>
               <li>Give two or three real time slots</li>

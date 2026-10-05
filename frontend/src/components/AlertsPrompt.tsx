@@ -71,7 +71,7 @@ export default function AlertsPrompt() {
         <button
           type="button"
           onClick={dismiss}
-          aria-label="Dismiss"
+          aria-label="Dismiss alerts reminder"
           className="rounded-full p-2 text-ink-muted transition-colors hover:bg-surface-sunken hover:text-ink"
         >
           <X size={18} />

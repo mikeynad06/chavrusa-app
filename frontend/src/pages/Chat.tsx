@@ -151,6 +151,7 @@ export default function Chat() {
 
       <form onSubmit={handleSend} className="flex items-center gap-2.5 border-t border-border pt-4">
         <input
+          aria-label="Message"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder="Write a message…"

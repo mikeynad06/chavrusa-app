@@ -38,7 +38,7 @@ export default function RequestCard({
       }
       style={isClaimed ? undefined : { boxShadow: '0 1px 2px rgba(28,25,23,0.04)' }}
     >
-      <h3 className="font-serif text-[21px] font-semibold text-ink">{title}</h3>
+      <h2 className="font-serif text-[21px] font-semibold text-ink">{title}</h2>
 
       <p className="mt-3 text-[14.5px] leading-[1.55] text-ink-muted">{request.description}</p>
 

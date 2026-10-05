@@ -152,16 +152,18 @@ export default function Profile() {
         className="mt-8 rounded-2xl border border-border bg-surface p-[26px]"
       >
         <h2 className="font-serif text-[20px] font-semibold text-ink">Your info</h2>
-        <label className="mb-[7px] mt-5 block text-[13px] font-semibold text-ink-muted">Name</label>
+        <label htmlFor="profile-name" className="mb-[7px] mt-5 block text-[13px] font-semibold text-ink-muted">Name</label>
         <input
+          id="profile-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="w-full rounded-[10px] border border-border bg-bg px-[15px] py-[13px] text-[15px] text-ink focus:border-border-strong focus:outline-none"
         />
-        <label className="mb-[7px] mt-[18px] block text-[13px] font-semibold text-ink-muted">
+        <label htmlFor="profile-whatsapp" className="mb-[7px] mt-[18px] block text-[13px] font-semibold text-ink-muted">
           WhatsApp number
         </label>
         <input
+          id="profile-whatsapp"
           value={whatsappNumber}
           onChange={(e) => setWhatsappNumber(e.target.value)}
           placeholder="+1 555 000 0000"
@@ -198,6 +200,7 @@ export default function Profile() {
               key={t.id}
               type="button"
               onClick={() => handleRemoveTopic(t.topic)}
+              aria-label={`Remove ${humanizeEnum(t.topic)} alert`}
               className="rounded-full bg-ink px-3.5 py-2 text-[13px] font-semibold text-bg"
             >
               {humanizeEnum(t.topic)} ×
@@ -211,6 +214,7 @@ export default function Profile() {
           <div className="mt-3 flex items-center gap-2.5">
             <div className="relative max-w-[220px]">
               <select
+                aria-label="Add a topic"
                 value={newTopic}
                 onChange={(e) => setNewTopic(e.target.value as Topic)}
                 className="w-full appearance-none rounded-[10px] border border-border bg-bg px-[13px] py-2.5 text-[14px] text-ink focus:border-border-strong focus:outline-none"
@@ -242,6 +246,7 @@ export default function Profile() {
               key={l.id}
               type="button"
               onClick={() => handleRemoveLocation(l.id)}
+              aria-label={`Remove ${humanizeEnum(l.location)} alert`}
               className="rounded-full bg-ink px-3.5 py-2 text-[13px] font-semibold text-bg"
             >
               {humanizeEnum(l.location)} ×
@@ -255,6 +260,7 @@ export default function Profile() {
           <div className="mt-3 flex items-center gap-2.5">
             <div className="relative max-w-[220px]">
               <select
+                aria-label="Add a location"
                 value={newLocation}
                 onChange={(e) => setNewLocation(e.target.value as Location)}
                 className="w-full appearance-none rounded-[10px] border border-border bg-bg px-[13px] py-2.5 text-[14px] text-ink focus:border-border-strong focus:outline-none"
@@ -282,7 +288,7 @@ export default function Profile() {
 
       <div className="mt-6 rounded-2xl border border-border bg-surface p-[26px]">
         <h2 className="font-serif text-[20px] font-semibold text-ink">Your requests</h2>
-        {error && <p className="mt-3 text-[13.5px] text-red-700">{error}</p>}
+        {error && <p role="alert" className="mt-3 text-[13.5px] text-red-700">{error}</p>}
         <div className="mt-4 flex flex-col gap-3">
           {profile.requests.map((r) => (
             <div
