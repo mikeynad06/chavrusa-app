@@ -14,6 +14,7 @@ import Chat from './pages/Chat.tsx';
 import About from './pages/About.tsx';
 import Haskamas from './pages/Haskamas.tsx';
 import Profile from './pages/Profile.tsx';
+import NotFound from './pages/NotFound.tsx';
 import MainLayout from './components/MainLayout.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 
@@ -38,6 +39,7 @@ function App() {
             <Route path="/matches/:matchId" element={<Chat />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>
