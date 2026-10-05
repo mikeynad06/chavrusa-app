@@ -22,6 +22,31 @@
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
+/* Tailwind v4's preflight no longer gives buttons a pointer cursor (v3 did), so restore it for
+   everything clickable. In the base layer, so cursor-* utilities on a component still win. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  summary,
+  select:not(:disabled),
+  label[for],
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled),
+  input[type="submit"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [role="button"][aria-disabled="true"],
+  select:disabled,
+  input[type="checkbox"]:disabled,
+  input[type="radio"]:disabled,
+  input[type="submit"]:disabled {
+    cursor: not-allowed;
+  }
+}
+
 body {
   margin: 0;
   background: var(--color-bg);
