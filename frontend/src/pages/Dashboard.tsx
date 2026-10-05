@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import RequestCard from '../components/RequestCard';
+import AlertsPrompt from '../components/AlertsPrompt';
 import { useAuth } from '../context/AuthContext';
 import type { StudyRequest } from '../types/request';
 
@@ -50,6 +51,8 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto max-w-[1180px] px-6 pb-[84px] pt-10">
+      <AlertsPrompt />
+
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-serif text-[clamp(28px,3.4vw,38px)] font-semibold text-ink">

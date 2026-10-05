@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import api from '../services/api';
 import { humanizeEnum } from '../lib/format';
@@ -45,6 +46,8 @@ export default function Profile() {
   const [newLocation, setNewLocation] = useState<Location | ''>('');
   const [canceling, setCanceling] = useState<string | null>(null);
   const [error, setError] = useState('');
+  const { hash } = useLocation();
+  const highlightNotify = hash === '#notify';
 
   const load = () => {
     api.get<UserProfile>('/users/me').then((res) => {
@@ -55,6 +58,15 @@ export default function Profile() {
   };
 
   useEffect(load, []);
+
+  // Arriving from the Dashboard alerts prompt: the section only exists once the profile has loaded,
+  // so the browser's own #hash scroll can't find it -- scroll to it ourselves.
+  const profileLoaded = profile !== null;
+  useEffect(() => {
+    if (highlightNotify && profileLoaded) {
+      document.getElementById('notify')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [highlightNotify, profileLoaded]);
 
   const handleSaveInfo = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,8 +164,17 @@ export default function Profile() {
         </div>
       </form>
 
-      <div className="mt-6 rounded-2xl border border-border bg-surface p-[26px]">
-        <h2 className="font-serif text-[20px] font-semibold text-ink">Notify me about</h2>
+      <section
+        id="notify"
+        aria-labelledby="notify-heading"
+        className={`mt-6 scroll-mt-28 rounded-2xl border bg-surface p-[26px] ${
+          highlightNotify ? 'border-brass ring-2 ring-brass/25' : 'border-border'
+        }`}
+      >
+        <h2 id="notify-heading" className="font-serif text-[20px] font-semibold text-ink">Notify me about</h2>
+        <p className="mt-1.5 text-[14px] text-ink-muted">
+          You get an email when a new request matches one of your topics and one of your locations.
+        </p>
 
         <p className="mb-2.5 mt-5 text-[13px] font-semibold text-ink-muted">Topics</p>
         <div className="flex flex-wrap gap-2">
@@ -242,7 +263,7 @@ export default function Profile() {
             </button>
           </div>
         )}
-      </div>
+      </section>
 
       <div className="mt-6 rounded-2xl border border-border bg-surface p-[26px]">
         <h2 className="font-serif text-[20px] font-semibold text-ink">Your requests</h2>
