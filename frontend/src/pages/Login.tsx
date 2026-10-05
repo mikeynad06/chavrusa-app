@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { SHOW_PHOTOS } from '../config/features';
 import GoogleButton from '../components/GoogleButton';
+import { safeNextPath } from '../lib/redirect';
 import type { PlatformStats } from '../types/stats';
 
 function formatAvgClaim(days: number | null | undefined): string {
@@ -22,6 +23,9 @@ export default function Login() {
   const [submitting, setSubmitting] = useState(false);
   const [stats, setStats] = useState<PlatformStats | null>(null);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  // Set when ProtectedRoute bounced them here, e.g. from a match link in an email.
+  const next = safeNextPath(searchParams.get('next'));
   const { login } = useAuth();
 
   useEffect(() => {
@@ -38,7 +42,7 @@ export default function Login() {
     try {
       const response = await api.post('/auth/login', { email, password });
       login(response.data.access_token);
-      navigate('/dashboard');
+      navigate(next ?? '/dashboard', { replace: true });
     } catch {
       setError('Login failed. Check your credentials.');
     } finally {
@@ -117,11 +121,11 @@ export default function Login() {
             <span className="h-px flex-1 bg-border" />
           </div>
 
-          <GoogleButton />
+          <GoogleButton next={next} />
 
           <p className="mt-[26px] text-[14px] text-ink-muted">
             New here?{' '}
-            <Link to="/register" className="font-semibold text-brass-dark hover:text-ink hover:underline">
+            <Link to={next ? `/register?next=${encodeURIComponent(next)}` : '/register'} className="font-semibold text-brass-dark hover:text-ink hover:underline">
               Create an account
             </Link>{' '}
             — takes a minute.

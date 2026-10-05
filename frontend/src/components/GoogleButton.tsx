@@ -2,6 +2,8 @@
 // #747775 border, #1f1f1f text, and the unmodified four-color G on the left.
 // The G is inline so there's no image request that could fail.
 
+import { rememberNextForGoogle } from '../lib/redirect';
+
 const GOOGLE_AUTH_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/auth/google`;
 
 function GoogleG() {
@@ -27,12 +29,13 @@ function GoogleG() {
   );
 }
 
-export default function GoogleButton() {
+export default function GoogleButton({ next = null }: { next?: string | null }) {
   return (
     <button
       type="button"
       // Full-page navigation: the backend redirects to Google's consent screen, then back to /auth/callback.
       onClick={() => {
+        rememberNextForGoogle(next);
         window.location.href = GOOGLE_AUTH_URL;
       }}
       className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-full border border-[#747775] bg-white py-[13px] text-[15px] font-semibold text-[#1f1f1f] transition-colors hover:bg-[#f2f2f2] active:bg-[#e8e8e8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass"

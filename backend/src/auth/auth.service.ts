@@ -7,6 +7,7 @@ import { Resend } from 'resend';
 import { Location, Timezone } from '@prisma/client';
 import type { Profile } from 'passport-google-oauth20';
 import { FROM_ADDRESS, REPLY_TO_ADDRESS } from '../notifications/notifications.service';
+import { frontendLink, renderEmail } from '../notifications/email-content';
 
 const RESET_TOKEN_TTL_MS = 30 * 60 * 1000;
 const VERIFICATION_TOKEN_TTL_MS = 24 * 60 * 60 * 1000;
@@ -151,15 +152,19 @@ export class AuthService {
       data: { resetToken: hashToken(resetToken), resetTokenExpiry },
     });
 
-    const frontendUrl = process.env.FRONTEND_URL?.split(',')[0].trim() || 'http://localhost:5173';
-    const resetLink = `${frontendUrl}/reset-password?token=${resetToken}`;
+    const { text, html } = renderEmail({
+      paragraphs: [`Hi ${user.name}, click the button below to reset your password. This link expires in 30 minutes.`],
+      button: { label: 'Reset your password', url: frontendLink(`/reset-password?token=${resetToken}`) },
+      after: ["If you didn't request this, you can safely ignore this email."],
+    });
 
     const { error } = await this.resend.emails.send({
       from: FROM_ADDRESS,
       replyTo: REPLY_TO_ADDRESS,
       to: user.email,
       subject: 'Reset your Chavrusa password',
-      text: `Hi ${user.name}, click the link below to reset your password. This link expires in 30 minutes.\n\n${resetLink}\n\nIf you didn't request this, you can safely ignore this email.`,
+      text,
+      html,
     });
 
     if (error) {
@@ -249,15 +254,21 @@ export class AuthService {
   }
 
   private async sendVerificationEmail(email: string, name: string, token: string) {
-    const frontendUrl = process.env.FRONTEND_URL?.split(',')[0].trim() || 'http://localhost:5173';
-    const verifyLink = `${frontendUrl}/verify-email?token=${token}`;
+    const { text, html } = renderEmail({
+      paragraphs: [
+        `Hi ${name}, welcome to Chavrusa! Click the button below to verify your email address. This link expires in 24 hours.`,
+      ],
+      button: { label: 'Verify your email', url: frontendLink(`/verify-email?token=${token}`) },
+      after: ["If you didn't create this account, you can safely ignore this email."],
+    });
 
     const { error } = await this.resend.emails.send({
       from: FROM_ADDRESS,
       replyTo: REPLY_TO_ADDRESS,
       to: email,
       subject: 'Verify your Chavrusa email',
-      text: `Hi ${name}, welcome to Chavrusa! Click the link below to verify your email address. This link expires in 24 hours.\n\n${verifyLink}\n\nIf you didn't create this account, you can safely ignore this email.`,
+      text,
+      html,
     });
 
     if (error) {

@@ -9,6 +9,7 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { GetUser } from './get-user.decorator';
 import { GoogleCallbackGuard } from './google-callback.guard';
+import { frontendBaseUrl } from '../notifications/email-content';
 
 @Controller('auth')
 export class AuthController {
@@ -65,7 +66,7 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(GoogleCallbackGuard)
   async googleCallback(@Req() req: Request, @Res() res: Response) {
-    const frontendUrl = process.env.FRONTEND_URL?.split(',')[0].trim() || 'http://localhost:5173';
+    const frontendUrl = frontendBaseUrl();
     // Any failure goes back to /auth/callback without a token, which shows the "didn't go through" page.
     const failureRedirect = `${frontendUrl}/auth/callback?error=google`;
 

@@ -3,6 +3,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { Resend } from 'resend';
 import { PrismaService } from '../prisma/prisma.service';
 import { Topic, Location } from '@prisma/client';
+import { frontendLink, humanizeEnum, renderEmail } from './email-content';
 
 export const FROM_ADDRESS = 'Chavrusa <noreply@findachavrusa.org>';
 // noreply@ isn't a real inbox, so route replies somewhere a person reads them.
@@ -11,6 +12,7 @@ export const REPLY_TO_ADDRESS = 'mikeynad06@gmail.com';
 interface RequestCreatedEvent {
   id: string;
   topic: Topic;
+  seferOrTopic?: string | null;
   location?: Location | null;
   requesterId: string;
 }
@@ -42,12 +44,21 @@ export class NotificationsService {
     if (!request || !claimer) return;
 
     // 2. Send the email alert
+    const title = request.seferOrTopic || humanizeEnum(request.topic);
+    const { text, html } = renderEmail({
+      paragraphs: [
+        `Hi ${request.requester.name}, great news!`,
+        `${claimer.name} has claimed your request "${title}" and wants to learn it with you. Open your match to start chatting and set a first seder.`,
+      ],
+      button: { label: 'Open your match', url: frontendLink(`/matches/${payload.matchId}`) },
+    });
     const { error } = await this.resend.emails.send({
       from: FROM_ADDRESS,
       replyTo: REPLY_TO_ADDRESS,
       to: request.requester.email,
       subject: 'Your Chavrusa request was claimed!',
-      text: `Hey ${request.requester.name}, great news! ${claimer.name} has agreed to learn ${request.topic} with you. Open your matches to start chatting: /matches/${payload.matchId}`,
+      text,
+      html,
     });
 
     if (error) {
@@ -84,13 +95,26 @@ export class NotificationsService {
     });
 
     // 5. Send the targeted alerts
+    const topic = humanizeEnum(payload.topic);
+    const location = humanizeEnum(payload.location);
+    // The title is optional on requests; skip that line rather than repeat the topic.
+    const details = [payload.seferOrTopic, `Topic: ${topic}`, `Location: ${location}`].filter(Boolean).join('\n');
     for (const user of users) {
+      const { text, html } = renderEmail({
+        paragraphs: [
+          `Hi ${user.name}, a new request matching your topic and location alerts was just posted.`,
+          details,
+          'Take a look and claim it before someone else does.',
+        ],
+        button: { label: 'See open requests', url: frontendLink('/dashboard') },
+      });
       const { error } = await this.resend.emails.send({
         from: FROM_ADDRESS,
         replyTo: REPLY_TO_ADDRESS,
         to: user.email,
-        subject: `New ${payload.topic} request in ${payload.location}`,
-        text: `Hi ${user.name}, a new ${payload.topic} request was just posted in ${payload.location} — matching your topic and location subscriptions. Check it out and claim it before someone else does!`,
+        subject: `New ${topic} request in ${location}`,
+        text,
+        html,
       });
 
       if (error) {

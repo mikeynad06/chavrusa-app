@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff, ChevronDown } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { SHOW_PHOTOS } from '../config/features';
 import GoogleButton from '../components/GoogleButton';
+import { safeNextPath } from '../lib/redirect';
 import { humanizeEnum } from '../lib/format';
 import type { Location, Timezone } from '../types/request';
 
@@ -48,6 +49,9 @@ export default function Register() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  // Set when ProtectedRoute bounced them here, e.g. from a match link in an email.
+  const next = safeNextPath(searchParams.get('next'));
   const { login } = useAuth();
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -71,7 +75,7 @@ export default function Register() {
       });
       const loginRes = await api.post('/auth/login', { email, password });
       login(loginRes.data.access_token);
-      navigate('/dashboard');
+      navigate(next ?? '/dashboard', { replace: true });
     } catch (err) {
       setError(extractErrorMessage(err));
     } finally {
@@ -216,11 +220,11 @@ export default function Register() {
             <span className="h-px flex-1 bg-border" />
           </div>
 
-          <GoogleButton />
+          <GoogleButton next={next} />
 
           <p className="mt-[26px] text-[14px] text-ink-muted">
             Already have an account?{' '}
-            <Link to="/login" className="font-semibold text-brass-dark hover:text-ink hover:underline">
+            <Link to={next ? `/login?next=${encodeURIComponent(next)}` : '/login'} className="font-semibold text-brass-dark hover:text-ink hover:underline">
               Log in
             </Link>
           </p>

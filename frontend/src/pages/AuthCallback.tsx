@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { nextAfterGoogle } from '../lib/redirect';
 
 export default function AuthCallback() {
   const [searchParams] = useSearchParams();
@@ -12,7 +13,7 @@ export default function AuthCallback() {
     if (token) {
       login(token);
       // Replace, so the ?token=… URL doesn't stay in history behind the back button.
-      navigate('/dashboard', { replace: true });
+      navigate(nextAfterGoogle() ?? '/dashboard', { replace: true });
     }
   }, [token, login, navigate]);
 
