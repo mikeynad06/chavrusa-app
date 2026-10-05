@@ -1,5 +1,6 @@
 import { Controller, Post, Get, Body, HttpCode, HttpStatus, UseGuards, Req, Res } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
 import type { Profile } from 'passport-google-oauth20';
 import { AuthService } from './auth.service';
@@ -10,42 +11,54 @@ import { VerifyEmailDto } from './dto/verify-email.dto';
 import { GetUser } from './get-user.decorator';
 import { GoogleCallbackGuard } from './google-callback.guard';
 import { frontendBaseUrl } from '../notifications/email-content';
+import { AUTH_RATE_LIMITS } from './rate-limits';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @UseGuards(ThrottlerGuard)
+  @Throttle(AUTH_RATE_LIMITS.register)
   @Post('register')
   register(@Body() body: CreateUserDto) {
     return this.authService.register(body);
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(ThrottlerGuard)
+  @Throttle(AUTH_RATE_LIMITS.login)
   @Post('login')
   login(@Body() body: any) {
     return this.authService.login(body.email, body.password);
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(ThrottlerGuard)
+  @Throttle(AUTH_RATE_LIMITS.forgotPassword)
   @Post('forgot-password')
   forgotPassword(@Body() body: ForgotPasswordDto) {
     return this.authService.forgotPassword(body.email);
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(ThrottlerGuard)
+  @Throttle(AUTH_RATE_LIMITS.standard)
   @Post('reset-password')
   resetPassword(@Body() body: ResetPasswordDto) {
     return this.authService.resetPassword(body.token, body.newPassword);
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(ThrottlerGuard)
+  @Throttle(AUTH_RATE_LIMITS.standard)
   @Post('verify-email')
   verifyEmail(@Body() body: VerifyEmailDto) {
     return this.authService.verifyEmail(body.token);
   }
 
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(ThrottlerGuard, AuthGuard('jwt'))
+  @Throttle(AUTH_RATE_LIMITS.standard)
   @Post('resend-verification')
   resendVerification(@GetUser() user: { userId: string }) {
     return this.authService.resendVerification(user.userId);

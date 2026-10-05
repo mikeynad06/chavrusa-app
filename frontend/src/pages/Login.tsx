@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { SHOW_PHOTOS } from '../config/features';
 import GoogleButton from '../components/GoogleButton';
 import { safeNextPath } from '../lib/redirect';
+import { rateLimitMessage } from '../lib/apiError';
 import type { PlatformStats } from '../types/stats';
 
 function formatAvgClaim(days: number | null | undefined): string {
@@ -43,8 +44,8 @@ export default function Login() {
       const response = await api.post('/auth/login', { email, password });
       login(response.data.access_token);
       navigate(next ?? '/dashboard', { replace: true });
-    } catch {
-      setError('Login failed. Check your credentials.');
+    } catch (err) {
+      setError(rateLimitMessage(err) ?? 'Login failed. Check your credentials.');
     } finally {
       setSubmitting(false);
     }

@@ -1,22 +1,29 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
+import { rateLimitMessage } from '../lib/apiError';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    setError('');
     try {
       await api.post('/auth/forgot-password', { email });
-    } catch {
-      // Intentionally ignored -- we show the same generic message either way.
+      setSubmitted(true);
+    } catch (err) {
+      // Rate limited: nothing was sent, so say so instead of claiming a link is on its way.
+      const limited = rateLimitMessage(err);
+      if (limited) setError(limited);
+      // Anything else gets the same generic message as success, so this can't reveal which emails exist.
+      else setSubmitted(true);
     } finally {
       setSubmitting(false);
-      setSubmitted(true);
     }
   };
 
@@ -51,6 +58,12 @@ export default function ForgotPassword() {
                 required
                 className="mb-5 w-full rounded-[10px] border border-border bg-surface px-[15px] py-[13px] text-[15px] text-ink focus:border-border-strong focus:outline-none"
               />
+
+              {error && (
+                <p role="alert" className="mb-4 text-[13.5px] text-red-700">
+                  {error}
+                </p>
+              )}
 
               <button
                 type="submit"

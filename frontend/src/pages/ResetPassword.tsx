@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import api from '../services/api';
+import { rateLimitMessage } from '../lib/apiError';
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
@@ -21,8 +22,8 @@ export default function ResetPassword() {
       await api.post('/auth/reset-password', { token, newPassword });
       setSuccess(true);
       setTimeout(() => navigate('/login'), 2000);
-    } catch {
-      setError('This reset link is invalid or has expired.');
+    } catch (err) {
+      setError(rateLimitMessage(err) ?? 'This reset link is invalid or has expired.');
     } finally {
       setSubmitting(false);
     }
