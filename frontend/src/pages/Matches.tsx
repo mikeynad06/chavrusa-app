@@ -4,6 +4,7 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { humanizeEnum, initials } from '../lib/format';
 import type { Match } from '../types/match';
+import { isMatch, listOf } from '../lib/shape';
 
 export default function Matches() {
   const [matches, setMatches] = useState<Match[] | null>(null);
@@ -13,7 +14,11 @@ export default function Matches() {
   useEffect(() => {
     api
       .get<Match[]>('/matches/mine')
-      .then((res) => setMatches(res.data))
+      .then((res) => {
+        const list = listOf(res.data, isMatch, 'matches');
+        if (list) setMatches(list);
+        else setError(true);
+      })
       .catch(() => setError(true));
   }, []);
 
@@ -23,7 +28,7 @@ export default function Matches() {
         Your matches
       </h1>
       <p className="mt-1.5 text-[15.5px] text-ink-muted">
-        {matches ? `${matches.length} ${matches.length === 1 ? 'chavrusa' : 'chavrusas'}` : 'Loading…'}
+        {matches ? `${matches.length} ${matches.length === 1 ? 'chavrusa' : 'chavrusas'}` : error ? '' : 'Loading…'}
       </p>
 
       {error && (

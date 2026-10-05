@@ -11,6 +11,7 @@ import RequestFilters, {
 } from '../components/RequestFilters';
 import { useAuth } from '../context/AuthContext';
 import type { StudyRequest } from '../types/request';
+import { isStudyRequest, listOf } from '../lib/shape';
 
 interface ApiError {
   response?: { data?: { message?: string | string[] } };
@@ -41,7 +42,11 @@ export default function Dashboard() {
   useEffect(() => {
     api
       .get<StudyRequest[]>('/requests')
-      .then((res) => setRequests(res.data))
+      .then((res) => {
+        const list = listOf(res.data, isStudyRequest, 'requests');
+        if (list) setRequests(list);
+        else setError(true);
+      })
       .catch(() => setError(true));
   }, []);
 
@@ -74,7 +79,9 @@ export default function Dashboard() {
           </h1>
           <p className="mt-1.5 text-[15.5px] text-ink-muted" aria-live="polite">
             {!requests
-              ? 'Loading…'
+              ? error
+                ? ''
+                : 'Loading…'
               : filtering
                 ? `${visible.length} of ${requests.length} ${requests.length === 1 ? 'request' : 'requests'}`
                 : `${requests.length} waiting for a chavrusa`}

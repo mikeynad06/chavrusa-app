@@ -4,6 +4,7 @@ import { ChevronDown } from 'lucide-react';
 import api from '../services/api';
 import { humanizeEnum } from '../lib/format';
 import type { UserProfile } from '../types/profile';
+import { isUserProfile } from '../lib/shape';
 import type { Topic, Location } from '../types/request';
 
 const TOPIC_OPTIONS: Topic[] = [
@@ -46,15 +47,25 @@ export default function Profile() {
   const [newLocation, setNewLocation] = useState<Location | ''>('');
   const [canceling, setCanceling] = useState<string | null>(null);
   const [error, setError] = useState('');
+  const [loadFailed, setLoadFailed] = useState(false);
   const { hash } = useLocation();
   const highlightNotify = hash === '#notify';
 
   const load = () => {
-    api.get<UserProfile>('/users/me').then((res) => {
-      setProfile(res.data);
-      setName(res.data.name);
-      setWhatsappNumber(res.data.whatsappNumber ?? '');
-    });
+    api
+      .get<UserProfile>('/users/me')
+      .then((res) => {
+        if (!isUserProfile(res.data)) {
+          console.error('[api] Unexpected /users/me response:', res.data);
+          setLoadFailed(true);
+          return;
+        }
+        setLoadFailed(false);
+        setProfile(res.data);
+        setName(res.data.name);
+        setWhatsappNumber(res.data.whatsappNumber ?? '');
+      })
+      .catch(() => setLoadFailed(true));
   };
 
   useEffect(load, []);
@@ -118,7 +129,11 @@ export default function Profile() {
   };
 
   if (!profile) {
-    return <div className="mx-auto max-w-[760px] px-6 py-16 text-[15px] text-ink-muted">Loading…</div>;
+    return (
+      <div className="mx-auto max-w-[760px] px-6 py-16 text-[15px] text-ink-muted">
+        {loadFailed ? "Couldn't load your profile. Try refreshing the page." : 'Loading…'}
+      </div>
+    );
   }
 
   const subscribedTopicValues = new Set(profile.preferredTopics.map((t) => t.topic));

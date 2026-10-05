@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { humanizeEnum } from '../lib/format';
 import type { Match } from '../types/match';
 import type { ChatMessage } from '../types/message';
+import { isChatMessage, isMatch, listOf } from '../lib/shape';
 
 const POLL_INTERVAL_MS = 3000;
 
@@ -22,7 +23,10 @@ export default function Chat() {
     if (!matchId) return;
     api
       .get<Match>(`/matches/${matchId}`)
-      .then((res) => setMatch(res.data))
+      .then((res) => {
+        if (isMatch(res.data)) setMatch(res.data);
+        else setError('other');
+      })
       .catch((err) => setError(err?.response?.status === 403 ? 'forbidden' : 'other'));
   }, [matchId]);
 
@@ -35,7 +39,10 @@ export default function Chat() {
       api
         .get<ChatMessage[]>(`/matches/${matchId}/messages`)
         .then((res) => {
-          if (!cancelled) setMessages(res.data);
+          if (cancelled) return;
+          const list = listOf(res.data, isChatMessage, 'messages');
+          if (list) setMessages(list);
+          else setError('other');
         })
         .catch((err) => {
           if (!cancelled) setError(err?.response?.status === 403 ? 'forbidden' : 'other');
@@ -62,7 +69,11 @@ export default function Chat() {
     setSending(true);
     try {
       const res = await api.post<ChatMessage>(`/matches/${matchId}/messages`, { body: draft.trim() });
-      setMessages((prev) => [...prev, res.data]);
+      // An odd response is skipped here; the next poll shows the message anyway.
+      if (isChatMessage(res.data)) {
+        const sent = res.data;
+        setMessages((prev) => [...prev, sent]);
+      }
       setDraft('');
     } catch {
       // polling will pick up any state change; leave the draft in place for retry
