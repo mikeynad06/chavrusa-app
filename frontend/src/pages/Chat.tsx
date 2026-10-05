@@ -6,6 +6,7 @@ import { humanizeEnum } from '../lib/format';
 import type { Match } from '../types/match';
 import type { ChatMessage } from '../types/message';
 import { isChatMessage, isMatch, listOf } from '../lib/shape';
+import ReportProblemLink from '../components/ReportProblemLink';
 
 const POLL_INTERVAL_MS = 3000;
 
@@ -17,7 +18,7 @@ export default function Chat() {
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<'forbidden' | 'other' | null>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!matchId) return;
@@ -59,7 +60,10 @@ export default function Chat() {
   }, [matchId, error]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Scroll only the message list to the newest message. scrollIntoView also scrolled the window,
+    // which tucked the header (back link, Report a problem) under the sticky navbar.
+    const list = listRef.current;
+    if (list) list.scrollTo({ top: list.scrollHeight, behavior: 'smooth' });
   }, [messages.length]);
 
   const handleSend = async (e: React.FormEvent) => {
@@ -109,9 +113,15 @@ export default function Chat() {
   return (
     <div className="mx-auto flex h-[calc(100svh-140px)] max-w-[760px] flex-col px-6 py-8">
       <div className="border-b border-border pb-4">
-        <Link to="/matches" className="text-[13px] font-semibold text-brass-dark">
-          ← Your matches
-        </Link>
+        <div className="flex items-center justify-between gap-4">
+          <Link to="/matches" className="text-[13px] font-semibold text-brass-dark">
+            ← Your matches
+          </Link>
+          <ReportProblemLink
+            matchId={matchId}
+            className="text-[13px] font-semibold text-ink-muted hover:text-ink hover:underline"
+          />
+        </div>
         <h1 className="mt-2 font-serif text-[26px] font-semibold text-ink">
           {otherParty ? otherParty.name : 'Loading…'}
         </h1>
@@ -122,7 +132,7 @@ export default function Chat() {
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto py-5">
+      <div ref={listRef} className="flex-1 overflow-y-auto py-5">
         {messages.length === 0 && (
           <p className="mt-6 text-center text-[14px] text-ink-muted">
             No messages yet. Say hello.
@@ -146,7 +156,6 @@ export default function Chat() {
             );
           })}
         </div>
-        <div ref={bottomRef} />
       </div>
 
       <form onSubmit={handleSend} className="flex items-center gap-2.5 border-t border-border pt-4">

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { SHOW_HASKAMAS } from '../config/features';
+import ReportProblemLink from './ReportProblemLink';
 
 export default function Footer() {
   return (
@@ -18,6 +19,7 @@ export default function Footer() {
           <Link to="/dashboard" className="text-neutral-on-dark hover:text-[#e8dfcc]">
             Dashboard
           </Link>
+          <ReportProblemLink className="text-neutral-on-dark hover:text-[#e8dfcc]" />
         </div>
         <span className="font-mono text-[11.5px]">Free to use · always</span>
       </div>
