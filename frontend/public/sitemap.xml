@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Public pages that currently exist and are visible.
+  Add https://www.findachavrusa.org/privacy and /terms once those pages exist and their placeholders are filled in,
+  and /haskamas if SHOW_HASKAMAS in src/config/features.ts is turned back on.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.findachavrusa.org/</loc>
+  </url>
+  <url>
+    <loc>https://www.findachavrusa.org/about</loc>
+  </url>
+  <url>
+    <loc>https://www.findachavrusa.org/login</loc>
+  </url>
+  <url>
+    <loc>https://www.findachavrusa.org/register</loc>
+  </url>
+</urlset>

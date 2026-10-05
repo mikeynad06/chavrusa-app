@@ -1,0 +1,15 @@
+# Chavrusa: https://www.findachavrusa.org
+# Public pages may be indexed; signed-in areas and one-time-token pages may not.
+
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /matches
+Disallow: /post
+Disallow: /requests
+Disallow: /auth
+Disallow: /reset-password
+Disallow: /verify-email
+
+Sitemap: https://www.findachavrusa.org/sitemap.xml
