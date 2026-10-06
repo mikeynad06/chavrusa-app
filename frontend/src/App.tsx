@@ -16,6 +16,7 @@ import About from './pages/About.tsx';
 import Haskamas from './pages/Haskamas.tsx';
 import Profile from './pages/Profile.tsx';
 import NotFound from './pages/NotFound.tsx';
+import ReportProblem from './pages/ReportProblem.tsx';
 import { legalPagesEnabled } from './config/legal.ts';
 
 // Loaded on demand: the Markdown renderer and the two documents only download when someone opens them.
@@ -46,6 +47,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<Landing />} />
           <Route path="/about" element={<About />} />
+          <Route path="/report" element={<ReportProblem />} />
           <Route path="/privacy" element={legalPage(<Privacy />)} />
           <Route path="/terms" element={legalPage(<Terms />)} />
           <Route path="/haskamas" element={SHOW_HASKAMAS ? <Haskamas /> : <Navigate to="/" replace />} />

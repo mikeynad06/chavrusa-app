@@ -9,6 +9,8 @@ import type { AccountDeletedEvent, AccountDeletionRequestedEvent } from '../user
 export const FROM_ADDRESS = 'Chavrusa <noreply@findachavrusa.org>';
 // noreply@ isn't a real inbox, so route replies somewhere a person reads them.
 export const REPLY_TO_ADDRESS = 'admin@findachavrusa.org';
+// The support inbox: where "Report a problem" submissions are sent.
+export const SUPPORT_ADDRESS = 'admin@findachavrusa.org';
 
 interface RequestCreatedEvent {
   id: string;

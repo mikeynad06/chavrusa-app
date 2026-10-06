@@ -1,25 +1,18 @@
+import { Link, useLocation } from 'react-router-dom';
 import { supportEmail } from '../config/legal';
 
-// "Report a problem": opens the user's email app addressed to support. Renders nothing until
-// SUPPORT_EMAIL in config/legal.ts is filled in.
+// "Report a problem": opens the /report form, noting the page it came from (and the match, on chat pages).
+// Hidden if SUPPORT_EMAIL in config/legal.ts is ever set back to a placeholder.
 export default function ReportProblemLink({ matchId, className }: { matchId?: string; className?: string }) {
-  if (!supportEmail) return null;
+  const { pathname } = useLocation();
+  if (!supportEmail || pathname === '/report') return null;
 
-  const subject = matchId ? `ChavrusaApp report (match ${matchId})` : 'ChavrusaApp report';
-  const body = [
-    'What happened? Please describe what you were doing, what you expected, and what you saw instead:',
-    '',
-    '',
-    '',
-    '---',
-    `Page: ${window.location.href}`,
-    ...(matchId ? [`Match: ${matchId}`] : []),
-  ].join('\n');
-  const href = `mailto:${supportEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const params = new URLSearchParams({ from: pathname });
+  if (matchId) params.set('match', matchId);
 
   return (
-    <a href={href} className={className}>
+    <Link to={`/report?${params.toString()}`} className={className}>
       Report a problem
-    </a>
+    </Link>
   );
 }

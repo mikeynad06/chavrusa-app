@@ -10,6 +10,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { AuthModule } from './auth/auth.module';
 import { StatsModule } from './stats/stats.module';
 import { ChatModule } from './chat/chat.module';
+import { SupportModule } from './support/support.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { ChatModule } from './chat/chat.module';
     MatchesModule,
     NotificationsModule, AuthModule,
     StatsModule,
-    ChatModule
+    ChatModule,
+    SupportModule,
   ],
   controllers: [],
   providers: [],

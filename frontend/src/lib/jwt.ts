@@ -9,3 +9,15 @@ export function decodeJwtUserId(token: string): string | null {
     return null;
   }
 }
+
+// The email address in a login token (used to prefill forms). Not verified: the server checks tokens.
+export function decodeJwtEmail(token: string): string | null {
+  try {
+    const payload = token.split('.')[1];
+    if (!payload) return null;
+    const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+    return typeof decoded.email === 'string' ? decoded.email : null;
+  } catch {
+    return null;
+  }
+}
