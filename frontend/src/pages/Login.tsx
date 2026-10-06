@@ -5,6 +5,7 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { SHOW_PHOTOS } from '../config/features';
 import GoogleButton from '../components/GoogleButton';
+import LegalConsentLine from '../components/LegalConsentLine';
 import { safeNextPath } from '../lib/redirect';
 import { rateLimitMessage } from '../lib/apiError';
 import type { PlatformStats } from '../types/stats';
@@ -125,6 +126,8 @@ export default function Login() {
           </div>
 
           <GoogleButton next={next} />
+          {/* Continue with Google can create an account, so the same agreement applies. */}
+          <LegalConsentLine className="mt-3 text-center" />
 
           <p className="mt-[26px] text-[14px] text-ink-muted">
             New here?{' '}

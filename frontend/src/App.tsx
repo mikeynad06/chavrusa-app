@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { SHOW_HASKAMAS } from './config/features.ts';
 import Login from './pages/Login.tsx';
@@ -15,6 +16,19 @@ import About from './pages/About.tsx';
 import Haskamas from './pages/Haskamas.tsx';
 import Profile from './pages/Profile.tsx';
 import NotFound from './pages/NotFound.tsx';
+import { legalPagesEnabled } from './config/legal.ts';
+
+// Loaded on demand: the Markdown renderer and the two documents only download when someone opens them.
+const Privacy = lazy(() => import('./pages/Privacy.tsx'));
+const Terms = lazy(() => import('./pages/Terms.tsx'));
+
+const legalPage = (page: React.ReactNode) =>
+  legalPagesEnabled ? (
+    <Suspense fallback={<div className="mx-auto max-w-[720px] px-6 py-16 text-[15px] text-ink-muted">Loading…</div>}>{page}</Suspense>
+  ) : (
+    // Until LEGAL_DATE is set in config/legal.ts, these pages don't exist yet.
+    <Navigate to="/" replace />
+  );
 import DeleteAccountConfirm from './pages/DeleteAccountConfirm.tsx';
 import MainLayout from './components/MainLayout.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
@@ -32,6 +46,8 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<Landing />} />
           <Route path="/about" element={<About />} />
+          <Route path="/privacy" element={legalPage(<Privacy />)} />
+          <Route path="/terms" element={legalPage(<Terms />)} />
           <Route path="/haskamas" element={SHOW_HASKAMAS ? <Haskamas /> : <Navigate to="/" replace />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
