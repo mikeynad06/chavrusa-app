@@ -1,10 +1,8 @@
-// Contact details you need to fill in before they're shown on the site.
+// Contact details shown on the site ("Report a problem" links).
 //
-//   >>> PLACEHOLDER: replace '[YOUR SUPPORT EMAIL]' below with the real address, e.g. 'support@findachavrusa.org'. <<<
-//
-// While it's still a placeholder (or isn't a valid-looking address), everything that depends on it stays
-// hidden, so a broken "mailto:[YOUR SUPPORT EMAIL]" link can never go live.
-export const SUPPORT_EMAIL = '[YOUR SUPPORT EMAIL]';
+// If a value here is ever set back to a [PLACEHOLDER] (or isn't a valid-looking address), everything that
+// depends on it is hidden, so a broken "mailto:[...]" link can never go live.
+export const SUPPORT_EMAIL = 'admin@findachavrusa.org';
 
 // Anything still in [SQUARE BRACKETS], or blank, counts as not filled in yet.
 export function isPlaceholder(value: string): boolean {
