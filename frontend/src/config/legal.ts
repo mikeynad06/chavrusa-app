@@ -22,6 +22,6 @@ export const supportEmail: string | null =
 // The value itself isn't displayed (the documents carry their own date). While it's still '[DATE]' or blank,
 // the footer links and the "By creating an account you agree…" lines are hidden, and /privacy and /terms
 // redirect to the home page. Once it's set, all of them appear.
-export const LEGAL_DATE = '[DATE]';
+export const LEGAL_DATE = 'October 6, 2026';
 
 export const legalPagesEnabled: boolean = !isPlaceholder(LEGAL_DATE);

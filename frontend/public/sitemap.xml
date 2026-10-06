@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   Public pages that currently exist and are visible.
-  /privacy and /terms are commented out below until LEGAL_DATE is set. Add /haskamas if SHOW_HASKAMAS in src/config/features.ts is turned back on.
+  Add /haskamas if SHOW_HASKAMAS in src/config/features.ts is turned back on.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -16,12 +16,10 @@
   <url>
     <loc>https://www.findachavrusa.org/register</loc>
   </url>
-  <!-- Uncomment these two once LEGAL_DATE in frontend/src/config/legal.ts is set and the pages are live:
   <url>
     <loc>https://www.findachavrusa.org/privacy</loc>
   </url>
   <url>
     <loc>https://www.findachavrusa.org/terms</loc>
   </url>
-  -->
 </urlset>
