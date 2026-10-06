@@ -21,10 +21,11 @@ export class UsersService {
   }
 
   async getDashboard(userId: string) {
-    return this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
+        password: true,
         name: true,
         email: true,
         location: true,
@@ -43,6 +44,10 @@ export class UsersService {
         },
       },
     });
+    if (!user) return null;
+    // Only whether a password exists (Profile uses it to pick how account deletion is confirmed), never the hash.
+    const { password, ...profile } = user;
+    return { ...profile, hasPassword: password !== null };
   }
 
   async updateProfile(userId: string, dto: UpdateProfileDto) {

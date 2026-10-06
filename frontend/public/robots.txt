@@ -11,5 +11,6 @@ Disallow: /requests
 Disallow: /auth
 Disallow: /reset-password
 Disallow: /verify-email
+Disallow: /delete-account
 
 Sitemap: https://www.findachavrusa.org/sitemap.xml

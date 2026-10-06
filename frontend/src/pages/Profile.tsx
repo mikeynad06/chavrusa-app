@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import api from '../services/api';
 import { humanizeEnum } from '../lib/format';
 import type { UserProfile } from '../types/profile';
 import { isUserProfile } from '../lib/shape';
+import DeleteAccountDialog from '../components/DeleteAccountDialog';
 import type { Topic, Location } from '../types/request';
 
 const TOPIC_OPTIONS: Topic[] = [
@@ -48,6 +49,8 @@ export default function Profile() {
   const [canceling, setCanceling] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [loadFailed, setLoadFailed] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const deleteButtonRef = useRef<HTMLButtonElement>(null);
   const { hash } = useLocation();
   const highlightNotify = hash === '#notify';
 
@@ -320,6 +323,31 @@ export default function Profile() {
           )}
         </div>
       </div>
+
+      <section aria-labelledby="delete-heading" className="mt-6 rounded-2xl border border-red-200 bg-surface p-[26px]">
+        <h2 id="delete-heading" className="font-serif text-[20px] font-semibold text-ink">Delete account</h2>
+        <p className="mt-1.5 text-[14px] leading-[1.6] text-ink-muted">
+          Permanently delete your profile, requests, matches and messages. This can't be undone.
+        </p>
+        <button
+          ref={deleteButtonRef}
+          type="button"
+          onClick={() => setDeleteOpen(true)}
+          className="mt-4 rounded-full border border-red-700 px-5 py-2.5 text-[14px] font-semibold text-red-700 transition-colors hover:bg-red-50"
+        >
+          Delete account
+        </button>
+      </section>
+
+      {deleteOpen && (
+        <DeleteAccountDialog
+          hasPassword={profile.hasPassword !== false}
+          onClose={() => {
+            setDeleteOpen(false);
+            deleteButtonRef.current?.focus();
+          }}
+        />
+      )}
     </div>
   );
 }

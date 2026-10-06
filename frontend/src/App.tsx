@@ -15,6 +15,7 @@ import About from './pages/About.tsx';
 import Haskamas from './pages/Haskamas.tsx';
 import Profile from './pages/Profile.tsx';
 import NotFound from './pages/NotFound.tsx';
+import DeleteAccountConfirm from './pages/DeleteAccountConfirm.tsx';
 import MainLayout from './components/MainLayout.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 
@@ -38,6 +39,8 @@ function App() {
             <Route path="/matches" element={<Matches />} />
             <Route path="/matches/:matchId" element={<Chat />} />
             <Route path="/profile" element={<Profile />} />
+            {/* The emailed deletion link needs a login to the same account; logged-out visitors come back after logging in. */}
+            <Route path="/delete-account" element={<DeleteAccountConfirm />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Route>

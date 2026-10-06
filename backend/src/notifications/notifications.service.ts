@@ -4,6 +4,7 @@ import { Resend } from 'resend';
 import { PrismaService } from '../prisma/prisma.service';
 import { Topic, Location, LearningModality } from '@prisma/client';
 import { frontendLink, humanizeEnum, renderEmail } from './email-content';
+import type { AccountDeletedEvent, AccountDeletionRequestedEvent } from '../users/account-deletion.service';
 
 export const FROM_ADDRESS = 'Chavrusa <noreply@findachavrusa.org>';
 // noreply@ isn't a real inbox, so route replies somewhere a person reads them.
@@ -135,6 +136,76 @@ export class NotificationsService {
       } catch (err) {
         console.error(`[NotificationsService] Failed to send new-request alert to ${user.email}:`, err);
       }
+    }
+  }
+
+  // Google-only accounts confirm deletion through this emailed link (password accounts confirm in the app).
+  @OnEvent('account.deletion-requested')
+  async handleAccountDeletionRequested(payload: AccountDeletionRequestedEvent) {
+    const { text, html } = renderEmail({
+      paragraphs: [
+        `Hi ${payload.name}, we received a request to delete your Chavrusa account.`,
+        'Open the link below and press the button to confirm. This permanently deletes your profile, your requests, your matches and their messages. The link expires in 30 minutes.',
+      ],
+      button: { label: 'Confirm account deletion', url: frontendLink(`/delete-account?token=${payload.token}`) },
+      after: ["If you didn't ask for this, ignore this email and your account will stay as it is."],
+    });
+    await this.send(payload.email, 'Confirm deleting your Chavrusa account', text, html, 'deletion-confirmation');
+  }
+
+  // After an account is deleted: confirm it to the person who left, and tell each matched partner what changed.
+  @OnEvent('account.deleted')
+  async handleAccountDeleted(payload: AccountDeletedEvent) {
+    const goodbye = renderEmail({
+      paragraphs: [
+        `Hi ${payload.name}, your Chavrusa account has been deleted, along with your requests, matches and messages.`,
+        "If you didn't do this, reply to this email and let us know.",
+      ],
+    });
+    await this.send(payload.email, 'Your Chavrusa account has been deleted', goodbye.text, goodbye.html, 'account-deleted');
+
+    if (payload.partners.length === 0) return;
+
+    // One email per partner, even if several of their matches were affected. Only verified users who
+    // haven't turned emails off. The deleted person isn't named: the request title identifies the match.
+    const byUser = new Map<string, AccountDeletedEvent['partners']>();
+    for (const p of payload.partners) byUser.set(p.userId, [...(byUser.get(p.userId) ?? []), p]);
+    let users: { id: string; name: string; email: string }[];
+    try {
+      users = await this.prisma.user.findMany({
+        where: { id: { in: [...byUser.keys()] }, emailVerified: true, isSubscribed: true },
+        select: { id: true, name: true, email: true },
+      });
+    } catch (err) {
+      console.error('[NotificationsService] Could not look up partners to notify after an account deletion:', err);
+      return;
+    }
+
+    const titleOf = (p: AccountDeletedEvent['partners'][number]) => p.requestTitle || humanizeEnum(p.requestTopic);
+    const list = (titles: string[]) => titles.map((t) => `"${t}"`).join(', ');
+    for (const user of users) {
+      const affected = byUser.get(user.id) ?? [];
+      const reopened = affected.filter((p) => p.kind === 'claimed').map(titleOf);
+      const removed = affected.filter((p) => p.kind === 'requested').map(titleOf);
+      const { text, html } = renderEmail({
+        paragraphs: [
+          `Hi ${user.name}, your chavrusa for ${list(affected.map(titleOf))} has deleted their Chavrusa account, so your conversation with them has been removed.`,
+          ...(reopened.length ? [`Your request ${list(reopened)} is open again, so someone else can claim it.`] : []),
+          ...(removed.length ? [`Your match for ${list(removed)} has been removed.`] : []),
+        ],
+        button: { label: 'See open requests', url: frontendLink('/dashboard') },
+      });
+      await this.send(user.email, 'Your chavrusa has left Chavrusa', text, html, 'partner-left');
+    }
+  }
+
+  // Sends one email; a failure (returned or thrown) is logged and never breaks the caller.
+  private async send(to: string, subject: string, text: string, html: string, kind: string) {
+    try {
+      const { error } = await this.resend.emails.send({ from: FROM_ADDRESS, replyTo: REPLY_TO_ADDRESS, to, subject, text, html });
+      if (error) console.error(`[NotificationsService] Failed to send ${kind} email to ${to}:`, error);
+    } catch (err) {
+      console.error(`[NotificationsService] Failed to send ${kind} email to ${to}:`, err);
     }
   }
 }

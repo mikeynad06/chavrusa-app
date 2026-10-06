@@ -3,6 +3,7 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import VerifyEmailBanner from './VerifyEmailBanner';
 import ErrorBoundary from './ErrorBoundary';
+import AccountDeletedNotice from './AccountDeletedNotice';
 
 export default function MainLayout() {
   const { pathname } = useLocation();
@@ -12,6 +13,9 @@ export default function MainLayout() {
       <Navbar />
       <ErrorBoundary silent>
         <VerifyEmailBanner />
+      </ErrorBoundary>
+      <ErrorBoundary silent>
+        <AccountDeletedNotice />
       </ErrorBoundary>
       <main className="flex-1">
         {/* A crashing page keeps the navbar and footer; keyed by path so navigating away clears the error. */}
