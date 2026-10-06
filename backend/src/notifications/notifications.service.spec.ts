@@ -122,11 +122,38 @@ describe('NotificationsService.handleRequestCreatedEvent', () => {
     error.mockRestore();
   });
 
-  it('every alert links to the dashboard and has an HTML version', async () => {
+  it('every alert links to the dashboard, has an HTML version, and replies go to admin@', async () => {
     await service.handleRequestCreatedEvent(request({ location: null, modality: 'ONLINE' }));
     for (const mail of resend.sent) {
       expect(mail.text).toContain('See open requests:\nhttps://findachavrusa.org/dashboard');
       expect(mail.html).toContain('href="https://findachavrusa.org/dashboard"');
+      expect(mail.replyTo).toBe('admin@findachavrusa.org');
     }
+  });
+});
+
+describe('NotificationsService.handleMatchClaimedEvent', () => {
+  it('emails the requester a link to the match, with replies going to admin@', async () => {
+    process.env.RESEND_API_KEY = DUMMY_RESEND_KEY;
+    process.env.FRONTEND_URL = 'https://www.findachavrusa.org';
+    const prisma = {
+      request: { findUnique: jest.fn(async () => ({ topic: 'GEMARA', seferOrTopic: 'Bava Metzia', requester: { name: 'Bina', email: 'bina@x.test' } })) },
+      user: { findUnique: jest.fn(async () => ({ name: 'Chaim' })) },
+    };
+    const resend = makeFakeResend();
+    const service = new NotificationsService(prisma as unknown as PrismaService);
+    (service as any).resend = resend.client;
+
+    await service.handleMatchClaimedEvent({ matchId: 'm-42', requestId: 'r-1', claimerId: 'chaim' });
+
+    expect(resend.sent).toHaveLength(1);
+    expect(resend.sent[0]).toMatchObject({
+      to: 'bina@x.test',
+      subject: 'Your Chavrusa request was claimed!',
+      replyTo: 'admin@findachavrusa.org',
+      from: 'Chavrusa <noreply@findachavrusa.org>',
+    });
+    expect(resend.sent[0].text).toContain('Chaim has claimed your request "Bava Metzia"');
+    expect(resend.sent[0].text).toContain('Open your match:\nhttps://www.findachavrusa.org/matches/m-42');
   });
 });

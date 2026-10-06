@@ -7,7 +7,7 @@ import { frontendLink, humanizeEnum, renderEmail } from './email-content';
 
 export const FROM_ADDRESS = 'Chavrusa <noreply@findachavrusa.org>';
 // noreply@ isn't a real inbox, so route replies somewhere a person reads them.
-export const REPLY_TO_ADDRESS = 'mikeynad06@gmail.com';
+export const REPLY_TO_ADDRESS = 'admin@findachavrusa.org';
 
 interface RequestCreatedEvent {
   id: string;

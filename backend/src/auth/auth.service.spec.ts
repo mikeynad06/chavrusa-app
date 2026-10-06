@@ -72,6 +72,8 @@ describe('AuthService', () => {
       expect(resend.send).toHaveBeenCalledTimes(1);
       expect(resend.sent[0].to).toBe('alice.smith@example.com');
       expect(resend.sent[0].subject).toBe('Verify your Chavrusa email');
+      expect(resend.sent[0].replyTo).toBe('admin@findachavrusa.org');
+      expect(resend.sent[0].from).toBe('Chavrusa <noreply@findachavrusa.org>');
       expect(resend.sent[0].text).toMatch(/https:\/\/findachavrusa\.org\/verify-email\?token=[a-f0-9]{64}/);
     });
 
@@ -188,6 +190,7 @@ describe('AuthService', () => {
       expect(google.resetToken).toBeNull();
       expect(resend.send).toHaveBeenCalledTimes(1);
       expect(resend.sent[0].to).toBe('real@example.com');
+      expect(resend.sent[0].replyTo).toBe('admin@findachavrusa.org');
       const rawToken = tokenFromEmail(resend.sent[0], '/reset-password');
       expect(real.resetToken).toBe(sha256(rawToken));
       expect(real.resetTokenExpiry.getTime()).toBeGreaterThan(Date.now());
